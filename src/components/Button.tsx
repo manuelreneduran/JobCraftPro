@@ -1,7 +1,7 @@
-import Button, { ButtonProps } from '@mui/material/Button'
+import MuiButton, { ButtonProps } from '@mui/material/Button'
 import { alpha, styled } from '@mui/material/styles';
 
-const GradientButton = styled(Button)(({ theme }) => ({
+const Button = styled(MuiButton)(({ theme }) => ({
     background: theme.palette.primary.main,
     border: 0,
     borderRadius: 3,
@@ -12,4 +12,4 @@ const GradientButton = styled(Button)(({ theme }) => ({
 }));
 
 
-export default GradientButton as React.FC<ButtonProps> 
+export default Button as React.FC<ButtonProps> 
