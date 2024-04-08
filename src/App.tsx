@@ -20,13 +20,26 @@ const App = () => {
       [e.target.name]: e.target.value,
     });
   }
-  const [triggerGenerateCoverLetter, { data, isLoading, isError }] = useGenerateCoverLetterMutation()
+  const [triggerGenerateCoverLetter, { data, isLoading, isError, error }] = useGenerateCoverLetterMutation()
 
   const onClick = () => {
     triggerGenerateCoverLetter(form)
   }
 
   const text = data?.result
+  let errMsg: string | undefined = ''
+
+  if (error) {
+    if ('status' in error) {
+      // you can access all properties of `FetchBaseQueryError` here
+      errMsg = 'error' in error ? error.error : JSON.stringify(error.data)
+
+    } else {
+      // you can access all properties of `SerializedError` here
+      errMsg = error.message
+    }
+
+  }
 
   return (
     <Container>
@@ -36,7 +49,7 @@ const App = () => {
         <RightPanel text={text} />
         <Button onClick={onClick} >Generate Cover Letter</Button>
         {isLoading && <CircularProgress />}
-        {isError && <Alert severity="error">An error occurred</Alert>}
+        {isError && !!errMsg && <Alert severity="error">{errMsg}</Alert>}
       </Stack>
     </Container>
   )
