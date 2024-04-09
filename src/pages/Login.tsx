@@ -1,14 +1,18 @@
-import { Container } from "@mui/material";
+import { Alert, Container } from "@mui/material";
 import { jwtDecode } from 'jwt-decode';
 import { useState } from 'react';
 import GoogleAuth from "../components/GoogleAuth";
+import { useAuth } from "../hooks/useAuth";
+import { CredentialResponse } from "@react-oauth/google";
 
 const Login = () => {
-    const [user, setUser] = useState(null)
     const [authError, setAuthError] = useState<boolean>(false)
 
-    const onAuthSuccess = (res: any) => {
-        setUser(jwtDecode(res.credential))
+    const { login } = useAuth()
+    const onAuthSuccess = (res: CredentialResponse) => {
+        if (!res.credential) return onAuthError()
+
+        login(jwtDecode(res.credential))
     }
 
     const onAuthError = () => {
@@ -22,6 +26,7 @@ const Login = () => {
     return (
         <Container>
             <GoogleAuth onError={onAuthError} onSuccess={onAuthSuccess} />
+            {authError && <Alert severity="error">Authentication failed</Alert>}
         </Container>
     )
 }

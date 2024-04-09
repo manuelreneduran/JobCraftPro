@@ -7,12 +7,15 @@ import LeftPanel from '../LeftPanel'
 import RightPanel from '../RightPanel'
 import Button from '../components/Button'
 import { useGenerateCoverLetterMutation } from '../services/api'
+import { useAuth } from '../hooks/useAuth'
 
 const Home = () => {
     const [form, setForm] = useState({
         resumeText: '',
         jobListingText: '',
     });
+
+    const { logout } = useAuth()
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setForm({
@@ -49,6 +52,8 @@ const Home = () => {
                 <LeftPanel handleChange={handleChange} />
                 <RightPanel text={text} />
                 <Button onClick={onClick} >Generate Cover Letter</Button>
+                <Button onClick={logout} >Logout</Button>
+
                 {isLoading && <CircularProgress />}
                 {isError && !!errMsg && <Alert severity="error">{errMsg}</Alert>}
             </Stack>

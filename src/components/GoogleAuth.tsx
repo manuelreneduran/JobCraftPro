@@ -1,7 +1,7 @@
-import { GoogleLogin } from '@react-oauth/google';
+import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
 
 type GoogleAuthProps = {
-    onSuccess: (credentialResponse: any) => void;
+    onSuccess: (credentialResponse: CredentialResponse) => void;
     onError: () => void;
 }
 
