@@ -7,12 +7,16 @@ import Button from './components/Button'
 import { useGenerateCoverLetterMutation } from './services/api'
 import { Alert, CircularProgress } from '@mui/material'
 import { useState } from 'react'
+import GoogleAuth from './components/GoogleAuth'
+import { jwtDecode } from 'jwt-decode'
 
 const App = () => {
   const [form, setForm] = useState({
     resumeText: '',
     jobListingText: '',
   });
+  const [user, setUser] = useState(null)
+  const [authError, setAuthError] = useState<boolean>(false)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({
@@ -41,8 +45,21 @@ const App = () => {
 
   }
 
+  const onAuthSuccess = (res: any) => {
+    setUser(jwtDecode(res.credential))
+  }
+
+  const onAuthError = () => {
+    setAuthError(true)
+    setTimeout(() => {
+      setAuthError(false)
+
+    }, 5000)
+  }
+
   return (
     <Container>
+      <GoogleAuth onError={onAuthError} onSuccess={onAuthSuccess} />
       <Header />
       <Stack direction="row">
         <LeftPanel handleChange={handleChange} />
@@ -50,6 +67,7 @@ const App = () => {
         <Button onClick={onClick} >Generate Cover Letter</Button>
         {isLoading && <CircularProgress />}
         {isError && !!errMsg && <Alert severity="error">{errMsg}</Alert>}
+        {authError && <Alert severity="error">Error logging in</Alert>}
       </Stack>
     </Container>
   )
