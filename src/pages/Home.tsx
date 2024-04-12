@@ -2,12 +2,12 @@ import { Alert, CircularProgress } from '@mui/material'
 import Container from '@mui/material/Container'
 import Stack from '@mui/material/Stack'
 import { useState } from 'react'
-import Header from '../Header'
 import LeftPanel from '../LeftPanel'
 import RightPanel from '../RightPanel'
 import Button from '../components/Button'
 import { useGenerateCoverLetterMutation } from '../services/api'
 import { useAuth } from '../hooks/useAuth'
+import CoreLayout from '../layouts/CoreLayout'
 
 const Home = () => {
     const [form, setForm] = useState({
@@ -46,18 +46,21 @@ const Home = () => {
 
 
     return (
-        <Container>
-            <Header />
-            <Stack direction="row">
-                <LeftPanel handleChange={handleChange} />
-                <RightPanel text={text} />
+        <CoreLayout>
+
+            <Container>
+                <Stack direction="row">
+                    <LeftPanel handleChange={handleChange} />
+                    <RightPanel text={text} />
+
+                    {isLoading && <CircularProgress />}
+                    {isError && !!errMsg && <Alert severity="error">{errMsg}</Alert>}
+                </Stack>
                 <Button onClick={onClick} >Generate Cover Letter</Button>
                 <Button onClick={logout} >Logout</Button>
 
-                {isLoading && <CircularProgress />}
-                {isError && !!errMsg && <Alert severity="error">{errMsg}</Alert>}
-            </Stack>
-        </Container>
+            </Container>
+        </CoreLayout>
     )
 }
 

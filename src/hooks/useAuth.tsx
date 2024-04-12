@@ -4,8 +4,14 @@ import { ROUTES } from "../utils/constants";
 import { useLocalStorage } from "./useLocalStorage";
 import { TUser } from "../utils/types";
 
+const defaultUser: TUser = {
+    email: "",
+    name: "",
+    picture: "",
+    exp: 0
+}
 const AuthContext = createContext({
-    user: {} || null,
+    user: defaultUser,
     login: (data: TUser) => { },
     logout: () => { },
 });
@@ -42,7 +48,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     const value = useMemo(
         () => ({
-            user: user as TUser | null,
+            user: user as TUser,
             login,
             logout,
         }),
