@@ -7,3 +7,5 @@ export enum MENU_ITEM_SETTINGS {
     LOGOUT = 'Logout',
     LOGIN = 'Login',
 }
+
+export const HEADER_HEIGHT = '5rem';

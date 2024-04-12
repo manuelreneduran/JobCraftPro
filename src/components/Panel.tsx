@@ -3,8 +3,7 @@ import { styled } from '@mui/material/styles';
 
 const Panel = styled(Box)(({ theme }) => ({
     flex: 1,
-    border: '1px solid black',
-    padding: theme.spacing(2),
+    boxSizing: 'border-box',
 }));
 
 

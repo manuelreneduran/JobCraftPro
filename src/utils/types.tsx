@@ -1,9 +1,5 @@
 /* API Response Types */
 
-export type TCoverLetter = {
-    resumeText: string,
-    jobListingText: string
-}
 
 export type TQueryResponse<T> = {
     result: T
@@ -16,4 +12,13 @@ export type TUser = {
     exp: number,
     name: string,
     picture: string,
+}
+
+/* Form Types */
+export type TCoverLetterFormInputs = {
+    name: string;
+    position: string;
+    resume: string;
+    jobListing: string;
+    length: number
 }
