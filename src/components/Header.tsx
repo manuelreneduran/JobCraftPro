@@ -12,15 +12,19 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import { useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
+import { MENU_ITEM_SETTINGS } from '../utils/constants';
+
+type TMenuItemSettings = MENU_ITEM_SETTINGS.LOGOUT;
 
 const pages = ['Cover Letter',];
-const settings = ['Logout'];
+const settings: TMenuItemSettings[] = [MENU_ITEM_SETTINGS.LOGOUT];
+
 
 const Header = () => {
     const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
     const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
-    const { user } = useAuth();
+    const { user, logout } = useAuth();
 
     const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorElNav(event.currentTarget);
@@ -33,11 +37,21 @@ const Header = () => {
         setAnchorElNav(null);
     };
 
-    const handleCloseUserMenu = () => {
+    const handleCloseUserMenu = (setting: TMenuItemSettings) => {
+        handleMenuItemClick(setting);
         setAnchorElUser(null);
     };
 
-    console.log(user?.picture)
+    const handleMenuItemClick = (setting: TMenuItemSettings) => {
+        switch (setting) {
+            case 'Logout':
+                logout();
+                break;
+            default:
+                break;
+        }
+    }
+
 
     return (
         <AppBar position="static">
@@ -150,7 +164,7 @@ const Header = () => {
                             onClose={handleCloseUserMenu}
                         >
                             {settings.map((setting) => (
-                                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                                <MenuItem key={setting} onClick={() => handleCloseUserMenu(setting)}>
                                     <Typography textAlign="center">{setting}</Typography>
                                 </MenuItem>
                             ))}
