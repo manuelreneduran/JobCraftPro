@@ -13,12 +13,14 @@ import MenuItem from '@mui/material/MenuItem';
 import { useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { MENU_ITEM_SETTINGS } from '../utils/constants';
+import logo from '../assets/logo.svg';
 
 type TMenuItemSettings = MENU_ITEM_SETTINGS.LOGOUT;
 
 const pages = ['Cover Letter',];
 const settings: TMenuItemSettings[] = [MENU_ITEM_SETTINGS.LOGOUT];
 
+const TITLE = 'JobCraftPro';
 
 const Header = () => {
     const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
@@ -55,28 +57,17 @@ const Header = () => {
 
     return (
         <>
-            <AppBar position="static">
-                <Container maxWidth="xl">
-                    <Toolbar disableGutters>
-                        <Typography
-                            variant="h5"
-                            noWrap
-                            component="a"
-                            href="#app-bar-with-responsive-menu"
-                            sx={{
-                                mr: 2,
-                                display: { xs: 'none', md: 'flex' },
-                                fontFamily: 'monospace',
-                                fontWeight: 700,
-                                letterSpacing: '.3rem',
-                                color: 'inherit',
-                                textDecoration: 'none',
-                            }}
-                        >
-                            CoverMaker
-                        </Typography>
+            <AppBar color="transparent" position="static" sx={{ boxShadow: '0 5px 20px 0 rgba(11,7,110,.04)' }}>
+                <Container maxWidth="xl" disableGutters sx={{ paddingRight: '16px', paddingLeft: '4px' }}>
+                    <Toolbar disableGutters >
+                        <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+
+                            <img style={{
+                                maxHeight: '54px',
+                            }} src={logo} alt="JobCraftPro Logo" />
 
 
+                        </Box>
                         <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
                             <IconButton
                                 size="large"
@@ -113,30 +104,33 @@ const Header = () => {
                                 ))}
                             </Menu>
                         </Box>
-                        <Typography
-                            variant="h5"
-                            noWrap
-                            component="a"
-                            href="#app-bar-with-responsive-menu"
-                            sx={{
-                                mr: 2,
-                                display: { xs: 'flex', md: 'none' },
-                                flexGrow: 1,
-                                fontFamily: 'monospace',
-                                fontWeight: 700,
-                                letterSpacing: '.3rem',
-                                color: 'inherit',
-                                textDecoration: 'none',
-                            }}
-                        >
-                            CoverMaker
-                        </Typography>
-                        <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+                        <Box sx={{
+                            display: { xs: 'flex', md: 'none' },
+                            flexGrow: 1,
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            padding: '0.5rem',
+                            textAlign: 'center',
+                            position: 'absolute',
+                            left: '50%',
+                            transform: 'translateX(-50%)',
+                        }}>
+
+                            <img style={{
+                                maxHeight: '36px',
+                            }} src={logo} alt="JobCraftPro Logo" />
+
+                        </Box>
+                        <Box sx={{ flexGrow: 1, paddingRight: '2rem', justifyContent: 'flex-end', display: { xs: 'none', md: 'flex' } }}>
                             {pages.map((page) => (
                                 <Button
                                     key={page}
                                     onClick={handleCloseNavMenu}
-                                    sx={{ my: 1, color: 'white', display: 'block' }}
+                                    sx={{
+                                        my: 1, display: 'block', "&.MuiButtonBase-root:hover": {
+                                            bgcolor: "transparent"
+                                        }
+                                    }}
                                 >
                                     {page}
                                 </Button>
@@ -146,7 +140,10 @@ const Header = () => {
                         <Box sx={{ flexGrow: 0 }}>
                             <Tooltip title="Open settings">
                                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                    <Avatar src={user?.picture} />
+                                    <Avatar sx={{
+                                        height: '32px',
+                                        width: '32px'
+                                    }} src={user?.picture} />
                                 </IconButton>
                             </Tooltip>
                             <Menu

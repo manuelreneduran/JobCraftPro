@@ -40,7 +40,7 @@ const Home = () => {
                     <Stack className="form-wrapper" spacing={2} height="100%" padding='1rem' boxSizing="border-box" sx={{
                         overflowY: 'auto',
                     }}>
-                        <Typography variant="h5" >Details</Typography>
+                        <Typography variant="h5" color="textPrimary" >Details</Typography>
                         <CoverLetterForm onSubmit={onSubmit} />
                     </Stack>
                 </Panel>
@@ -48,7 +48,7 @@ const Home = () => {
                     <Stack className="generated-cover-letter-wrapper" spacing={2} height="100%" padding='1rem' boxSizing="border-box" sx={{
                         overflowY: 'auto',
                     }}>
-                        <Typography variant="h5">Cover Letter</Typography>
+                        <Typography variant="h5" color="textPrimary">Cover Letter</Typography>
                     </Stack>
                 </Panel>
                 {
