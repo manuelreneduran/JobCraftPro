@@ -1,10 +1,10 @@
-import { Routes, Route } from "react-router-dom";
-import LoginPage from "./pages/LoginPage";
-import CoverLetterPage from "./pages/CoverLetterPage";
-import { AuthProvider } from "./hooks/useAuth";
+import { Route, Routes } from "react-router-dom";
 import { ProtectedRoute } from "./components/ProtectedRoute";
-import { ROUTES } from "./utils/constants";
+import { AuthProvider } from "./hooks/useAuth";
+import CoverLetterPage from "./pages/CoverLetterPage";
 import DashboardPage from "./pages/DashboardPage";
+import LoginPage from "./pages/LoginPage";
+import { EPaths } from "./utils/types";
 
 
 function App() {
@@ -12,13 +12,13 @@ function App() {
         <AuthProvider>
 
             <Routes>
-                <Route path={ROUTES.DASHBOARD} element={
+                <Route path={EPaths.DASHBOARD} element={
                     <ProtectedRoute>
                         <DashboardPage />
                     </ProtectedRoute>
                 } />
-                <Route path={ROUTES.LOGIN} element={<LoginPage />} />
-                <Route path={ROUTES.COVER_LETTER} element={
+                <Route path={EPaths.LOGIN} element={<LoginPage />} />
+                <Route path={EPaths.COVER_LETTER} element={
                     <ProtectedRoute>
                         <CoverLetterPage />
                     </ProtectedRoute>} />

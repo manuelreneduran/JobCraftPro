@@ -1,8 +1,7 @@
 import { createContext, useContext, useEffect, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { ROUTES } from "../utils/constants";
 import { useLocalStorage } from "./useLocalStorage";
-import { TUser } from "../utils/types";
+import { EPaths, TUser } from "../utils/types";
 
 const defaultUser: TUser = {
     email: "",
@@ -28,22 +27,22 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     // route guards
     useEffect(() => {
-        if (location.pathname !== ROUTES.LOGIN && !user) {
-            navigate(ROUTES.LOGIN, { replace: true });
+        if (location.pathname !== EPaths.LOGIN && !user) {
+            navigate(EPaths.LOGIN, { replace: true });
         }
-        if (location.pathname === ROUTES.LOGIN && !!user) {
-            navigate(ROUTES.DASHBOARD, { replace: true });
+        if (location.pathname === EPaths.LOGIN && !!user) {
+            navigate(EPaths.DASHBOARD, { replace: true });
         }
     }, [user, location.pathname])
 
     const login = async (data: TUser) => {
         setUser(data);
-        navigate(ROUTES.DASHBOARD, { replace: true });
+        navigate(EPaths.DASHBOARD, { replace: true });
     }
 
     const logout = () => {
         setUser(null);
-        navigate(ROUTES.LOGIN, { replace: true });
+        navigate(EPaths.LOGIN, { replace: true });
     };
 
     const value = useMemo(

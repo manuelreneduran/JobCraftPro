@@ -12,8 +12,9 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import { useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
-import { EMenuItemSettings, EPages } from '../utils/types';
+import { EMenuItemSettings, EPages, EPaths } from '../utils/types';
 import logo from '../assets/logo.svg';
+import { useNavigate } from 'react-router-dom';
 
 
 const pages: EPages[] = [EPages.DASHBOARD, EPages.COVER_LETTER];
@@ -24,6 +25,7 @@ const Header = () => {
     const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
     const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
+    const navigate = useNavigate();
     const { user, logout } = useAuth();
 
     const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -43,7 +45,7 @@ const Header = () => {
 
     const handleMenuItemSettingsClick = (setting: EMenuItemSettings) => {
         switch (setting) {
-            case 'Logout':
+            case EMenuItemSettings.LOGOUT:
                 logout();
                 break;
             default:
@@ -52,7 +54,17 @@ const Header = () => {
         handleCloseNavMenu();
     }
 
-    const handleNavPageClick = (page: string) => {
+    const handleNavPageClick = (page: EPages) => {
+        switch (page) {
+            case EPages.DASHBOARD:
+                navigate(EPaths.DASHBOARD);
+                break;
+            case EPages.COVER_LETTER:
+                navigate(EPaths.COVER_LETTER);
+                break;
+            default:
+                break;
+        }
         handleCloseNavMenu();
 
     }
@@ -66,7 +78,7 @@ const Header = () => {
                         <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
 
                             <img style={{
-                                maxHeight: '54px',
+                                maxHeight: '36px',
                             }} src={logo} alt="JobCraftPro Logo" />
 
 
@@ -128,7 +140,7 @@ const Header = () => {
                             {pages.map((page) => (
                                 <Button
                                     key={page}
-                                    onClick={handleCloseNavMenu}
+                                    onClick={() => handleNavPageClick(page)}
                                     sx={{
                                         my: 1, display: 'block', "&.MuiButtonBase-root:hover": {
                                             bgcolor: "transparent"
