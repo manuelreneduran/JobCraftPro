@@ -9,6 +9,9 @@ const Button = styled(MuiButton)(({ theme }) => ({
     color: 'white',
     height: 48,
     padding: '0 30px',
+    '&:hover': {
+        backgroundColor: '#ff6b1a',
+    },
 }));
 
 
