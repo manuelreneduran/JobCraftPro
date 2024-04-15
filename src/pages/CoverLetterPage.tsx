@@ -1,5 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup"
-import { Divider, LinearProgress, Typography } from '@mui/material'
+import { Divider, LinearProgress } from '@mui/material'
 import Stack from '@mui/material/Stack'
 import { useState } from 'react'
 import { Controller, SubmitHandler, useForm } from "react-hook-form"
@@ -10,6 +10,7 @@ import { TCoverLetterFormInputs } from '../utils/types'
 import { coverLetterFormSchema } from "../utils/validation"
 import Button from "../components/Button"
 import Input from "../components/Input"
+import Typography from "../components/Typography"
 
 const defaultFormValues: TCoverLetterFormInputs = {
     name: '',
@@ -24,6 +25,7 @@ const MAX_STEPS = 3
 
 const CoverLetterPage = () => {
     const [step, setStep] = useState<number>(1)
+    const [coverLetterTitle, setCoverLetterTitle] = useState<string>('New Cover Letter')
 
     const [triggerGenerateCoverLetter, { data, isLoading, isError, error }] = useGenerateCoverLetterMutation()
 
@@ -93,13 +95,13 @@ const CoverLetterPage = () => {
 
                             {step === 2 && (
                                 <>
-                                    <Typography variant="h6" color="textPrimary" >Position Details</Typography>
+                                    <Typography variant="h6" color="textPrimary" >Role Details</Typography>
 
                                     <Controller
                                         name="role"
                                         control={control}
                                         rules={{ required: true }}
-                                        render={({ field }) => <Input label="Role"   {...field} />}
+                                        render={({ field }) => <Input label="Role" helperText="The role you're applying for."   {...field} />}
                                     />
                                     <Controller
                                         name="jobListing"
@@ -155,8 +157,8 @@ const CoverLetterPage = () => {
 
                     </form>
                 </Stack>
-                <Stack flex={5} sx={{ backgroundColor: "#F6F5F4" }}>
-                    yo
+                <Stack spacing={2} padding={2} flex={5} sx={{ backgroundColor: "#F6F5F4" }}>
+                    <Typography variant="h6" >Preview</Typography>
                 </Stack>
             </Stack>
 

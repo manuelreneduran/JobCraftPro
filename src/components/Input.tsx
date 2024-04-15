@@ -1,6 +1,7 @@
-import { FormControl, Typography } from '@mui/material';
+import { FormControl } from '@mui/material';
 import MuiOutlinedInput, { OutlinedInputProps } from '@mui/material/OutlinedInput';
 import HelperText from './HelperText';
+import Typography from './Typography';
 
 type TInputProps = {
     helperText?: string | JSX.Element
@@ -9,7 +10,7 @@ const Input = ({ helperText, label, ...props }: TInputProps) => {
     return (
         <FormControl>
             <Typography>{label}</Typography>
-            <MuiOutlinedInput {...props} />
+            <MuiOutlinedInput {...props} size="small" />
             <HelperText>{helperText}</HelperText>
         </FormControl>
     )

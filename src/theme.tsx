@@ -15,7 +15,7 @@ const theme = createTheme({
         },
         text: {
             primary: '#36454F',
-            secondary: '#000'
+            secondary: '#FF5A00',
         }
     },
 

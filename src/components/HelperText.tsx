@@ -1,4 +1,5 @@
-import { Typography, TypographyProps } from "@mui/material"
+import { TypographyProps } from "@mui/material"
+import Typography from "./Typography"
 
 
 

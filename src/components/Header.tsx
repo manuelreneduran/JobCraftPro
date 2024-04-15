@@ -2,7 +2,6 @@ import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
@@ -15,6 +14,7 @@ import { useAuth } from '../hooks/useAuth';
 import { EMenuItemSettings, EPages, EPaths } from '../utils/types';
 import logo from '../assets/logo.svg';
 import { useNavigate } from 'react-router-dom';
+import Typography from './Typography';
 
 
 const pages: EPages[] = [EPages.DASHBOARD, EPages.COVER_LETTER];
