@@ -1,5 +1,4 @@
 import { Alert, CircularProgress, TextField, Typography } from '@mui/material'
-import Container from '@mui/material/Container'
 import Stack from '@mui/material/Stack'
 import { useState } from 'react'
 import { SubmitHandler } from "react-hook-form"
@@ -7,10 +6,9 @@ import CoverLetterForm from '../components/CoverLetterForm'
 import Panel from '../components/Panel'
 import CoreLayout from '../layouts/CoreLayout'
 import { useGenerateCoverLetterMutation } from '../services/api'
-import theme from '../theme'
 import { TCoverLetterFormInputs } from '../utils/types'
 
-const Home = () => {
+const CoverLetterPage = () => {
     const [edit, setEdit] = useState<boolean>(false)
 
     const [triggerGenerateCoverLetter, { data, isLoading, isError, error }] = useGenerateCoverLetterMutation()
@@ -65,4 +63,4 @@ const Home = () => {
     )
 }
 
-export default Home
+export default CoverLetterPage

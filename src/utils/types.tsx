@@ -1,3 +1,21 @@
+/* NAVIGATION TYPES */
+export enum EPages {
+    DASHBOARD = 'Dashboard',
+    COVER_LETTER = 'Cover Letter'
+}
+
+export enum EPaths {
+    DASHBOARD = '/',
+    LOGIN = '/login',
+    COVER_LETTER = '/cover-letter'
+}
+
+export enum EMenuItemSettings {
+    LOGOUT = 'Logout',
+    LOGIN = 'Login'
+}
+
+
 /* API Response Types */
 
 

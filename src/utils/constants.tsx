@@ -1,11 +1,12 @@
-export const ROUTES = {
+export const PAGES = {
+    DASHBOARD: 'Dashboard',
+    COVER_LETTER: 'Cover Letter'
+
+}
+export const NAV_LINKS = {
     DASHBOARD: '/',
     LOGIN: '/login',
-}
-
-export enum MENU_ITEM_SETTINGS {
-    LOGOUT = 'Logout',
-    LOGIN = 'Login',
+    COVER_LETTER: '/cover-letter'
 }
 
 export const HEADER_HEIGHT = '5rem';

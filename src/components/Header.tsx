@@ -12,15 +12,13 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import { useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
-import { MENU_ITEM_SETTINGS } from '../utils/constants';
+import { EMenuItemSettings, EPages } from '../utils/types';
 import logo from '../assets/logo.svg';
 
-type TMenuItemSettings = MENU_ITEM_SETTINGS.LOGOUT;
 
-const pages = ['Cover Letter',];
-const settings: TMenuItemSettings[] = [MENU_ITEM_SETTINGS.LOGOUT];
+const pages: EPages[] = [EPages.DASHBOARD, EPages.COVER_LETTER];
+const settings: EMenuItemSettings[] = [EMenuItemSettings.LOGOUT];
 
-const TITLE = 'JobCraftPro';
 
 const Header = () => {
     const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
@@ -39,12 +37,11 @@ const Header = () => {
         setAnchorElNav(null);
     };
 
-    const handleCloseUserMenu = (setting: TMenuItemSettings) => {
-        handleMenuItemClick(setting);
+    const handleCloseUserMenu = (setting: EMenuItemSettings) => {
         setAnchorElUser(null);
     };
 
-    const handleMenuItemClick = (setting: TMenuItemSettings) => {
+    const handleMenuItemSettingsClick = (setting: EMenuItemSettings) => {
         switch (setting) {
             case 'Logout':
                 logout();
@@ -52,6 +49,12 @@ const Header = () => {
             default:
                 break;
         }
+        handleCloseNavMenu();
+    }
+
+    const handleNavPageClick = (page: string) => {
+        handleCloseNavMenu();
+
     }
 
 
@@ -98,7 +101,7 @@ const Header = () => {
                                 }}
                             >
                                 {pages.map((page) => (
-                                    <MenuItem key={page} onClick={handleCloseNavMenu}>
+                                    <MenuItem key={page} onClick={() => handleNavPageClick(page)}>
                                         <Typography textAlign="center">{page}</Typography>
                                     </MenuItem>
                                 ))}
@@ -163,7 +166,7 @@ const Header = () => {
                                 onClose={handleCloseUserMenu}
                             >
                                 {settings.map((setting) => (
-                                    <MenuItem key={setting} onClick={() => handleCloseUserMenu(setting)}>
+                                    <MenuItem key={setting} onClick={() => handleMenuItemSettingsClick(setting)}>
                                         <Typography textAlign="center">{setting}</Typography>
                                     </MenuItem>
                                 ))}

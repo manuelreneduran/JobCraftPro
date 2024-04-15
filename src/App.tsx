@@ -1,9 +1,10 @@
 import { Routes, Route } from "react-router-dom";
-import LoginPage from "./pages/Login";
-import HomePage from "./pages/Home";
+import LoginPage from "./pages/LoginPage";
+import CoverLetterPage from "./pages/CoverLetterPage";
 import { AuthProvider } from "./hooks/useAuth";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { ROUTES } from "./utils/constants";
+import DashboardPage from "./pages/DashboardPage";
 
 
 function App() {
@@ -11,15 +12,15 @@ function App() {
         <AuthProvider>
 
             <Routes>
-                <Route path="/" element={
+                <Route path={ROUTES.DASHBOARD} element={
                     <ProtectedRoute>
-                        <HomePage />
+                        <DashboardPage />
                     </ProtectedRoute>
                 } />
                 <Route path={ROUTES.LOGIN} element={<LoginPage />} />
-                <Route path={ROUTES.DASHBOARD} element={
+                <Route path={ROUTES.COVER_LETTER} element={
                     <ProtectedRoute>
-                        <HomePage />
+                        <CoverLetterPage />
                     </ProtectedRoute>} />
             </Routes>
         </AuthProvider>
