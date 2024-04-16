@@ -36,7 +36,8 @@ export type TUser = {
 export type TCoverLetterFormInputs = {
     name: string;
     role: string;
-    resume: string;
+    resume?: string;
+    resumePDF?: any;
     jobListing: string;
     company: string;
     length?: number

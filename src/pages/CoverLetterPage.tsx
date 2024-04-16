@@ -19,6 +19,7 @@ const defaultFormValues: TCoverLetterFormInputs = {
     role: '',
     company: '',
     resume: '',
+    resumePDF: undefined,
     jobListing: '',
     length: 200,
     paragraphs: 4
@@ -63,7 +64,7 @@ const CoverLetterPage = () => {
 
     const steps = [
         'Upload Resume',
-        'Select Job',
+        'Upload Job Description',
         'Configure Parameters'
     ]
     return (
