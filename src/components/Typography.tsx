@@ -1,8 +1,8 @@
 import MuiTypography, { TypographyProps } from '@mui/material/Typography';
 
 
-const Typography = (props: TypographyProps) => {
-    return <MuiTypography color="textPrimary" {...props} />
+const Typography = ({ color = 'textPrimary', ...props }: TypographyProps) => {
+    return <MuiTypography  {...props} color={color} />
 
 }
 export default Typography

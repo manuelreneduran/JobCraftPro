@@ -1,20 +1,23 @@
 import { yupResolver } from "@hookform/resolvers/yup"
-import { Divider, LinearProgress } from '@mui/material'
+import CloudUploadIcon from '@mui/icons-material/CloudUpload'
+import { Divider, LinearProgress, Paper } from '@mui/material'
 import Stack from '@mui/material/Stack'
 import { useState } from 'react'
-import { Controller, SubmitHandler, useForm } from "react-hook-form"
+import { SubmitHandler, useForm } from "react-hook-form"
+import Button from "../components/Button"
 import HelperText from '../components/HelperText'
+import Typography from "../components/Typography"
 import CoreLayout from '../layouts/CoreLayout'
 import { useGenerateCoverLetterMutation } from '../services/api'
+import { colors } from "../styles/colors"
 import { TCoverLetterFormInputs } from '../utils/types'
 import { coverLetterFormSchema } from "../utils/validation"
-import Button from "../components/Button"
-import Input from "../components/Input"
-import Typography from "../components/Typography"
+import SecondaryButton from "../components/SecondaryButton"
 
 const defaultFormValues: TCoverLetterFormInputs = {
     name: '',
     role: '',
+    company: '',
     resume: '',
     jobListing: '',
     length: 200,
@@ -24,19 +27,21 @@ const defaultFormValues: TCoverLetterFormInputs = {
 const MAX_STEPS = 3
 
 const CoverLetterPage = () => {
-    const [step, setStep] = useState<number>(1)
-    const [coverLetterTitle, setCoverLetterTitle] = useState<string>('New Cover Letter')
+    const [step, setStep] = useState<number>(0)
 
     const [triggerGenerateCoverLetter, { data, isLoading, isError, error }] = useGenerateCoverLetterMutation()
 
     const {
         handleSubmit,
         control,
-        formState: { errors },
+        watch
     } = useForm<TCoverLetterFormInputs>({
         defaultValues: defaultFormValues,
         resolver: yupResolver(coverLetterFormSchema)
     })
+
+    const companyName = watch('company')
+
 
     let errMsg: string | undefined = ''
 
@@ -57,109 +62,64 @@ const CoverLetterPage = () => {
     const decrementStep = () => setStep(step - 1)
     return (
         <CoreLayout>
-            <Stack direction="row" height="100%">
-                <Stack flex={2} spacing={2} padding={2}>
-                    <Typography variant="h5">Cover Letter</Typography>
-                    <Stack>
-                        <LinearProgress variant="determinate" value={step * (100 / MAX_STEPS)} />
-                        <HelperText sx={{ marginTop: '.2rem' }}>Steps {step} of 3</HelperText>
-                    </Stack>
-                    <Divider />
-                    <form onSubmit={handleSubmit(onSubmit)}>
-                        <Stack spacing={2} className="form">
-                            {step === 1 && (
+            <Stack height="100%" justifyContent={{ xs: 'inherit', sm: 'center' }} alignItems={{ xs: 'inherit', sm: 'center' }} sx={{ backgroundColor: colors.background.secondary }} >
+                <Paper elevation={1} sx={{ display: "flex", width: { xs: '100%', sm: '75%' }, height: { xs: '100%', sm: '75%' } }} >
+
+                    <Stack flex={1} spacing={2} padding={2} justifyContent="space-between" >
+                        <Stack>
+                            <Typography variant="h5">Generate Cover Letter</Typography>
+                            <Stack>
+                                <LinearProgress variant="determinate" value={step * (100 / MAX_STEPS)} />
+                                <HelperText sx={{ marginTop: '.2rem' }}>Steps {step + 1} of 3</HelperText>
+                            </Stack>
+                        </Stack>
+                        <Divider />
+
+                        <Typography fontStyle="italic">
+                            Leverage the power of AI to build a custom cover letter for your next job application. Upload your resume to get started.
+                        </Typography>
+                        <Stack flex={2} justifyContent="center" alignItems="center">
+                            <SecondaryButton startIcon={<CloudUploadIcon />}
+                                sx={{ backgroundColor: colors.button.secondary.main }}>Upload Resume
+                            </SecondaryButton>
+                        </Stack>
+                        {
+                            step === 0 && (
                                 <>
-                                    <Typography variant="h6" color="textPrimary" >Personal Details</Typography>
-
-                                    <Controller
-                                        name="name"
-                                        control={control}
-                                        rules={{ required: true }}
-                                        render={({ field }) => <Input label="Full Name"  {...field} />}
-                                    />
-
-                                    <Controller
-                                        name="resume"
-                                        control={control}
-                                        rules={{ required: true }}
-                                        render={({ field }) => <Input
-                                            helperText="
-                                        Copy and Paste your resume here.
-                                    "
-                                            multiline rows={4} label="Resume"  {...field} />}
-                                    />
-                                    <Button onClick={incrementStep}>Next</Button>
-
+                                    <Stack flex={1} direction="row" alignItems="flex-end" justifyContent="flex-end">
+                                        <Button sx={{ flex: 1 }} onClick={incrementStep}>Next</Button>
+                                    </Stack>
                                 </>
-                            )}
+                            )
+                        }
 
-                            {step === 2 && (
+                        {
+                            step === 1 && (
                                 <>
-                                    <Typography variant="h6" color="textPrimary" >Role Details</Typography>
-
-                                    <Controller
-                                        name="role"
-                                        control={control}
-                                        rules={{ required: true }}
-                                        render={({ field }) => <Input label="Role" helperText="The role you're applying for."   {...field} />}
-                                    />
-                                    <Controller
-                                        name="jobListing"
-                                        control={control}
-                                        rules={{ required: true }}
-                                        render={({ field }) => <Input
-                                            helperText="Include only the important parts, i.e. required skills, about the company, etc."
-                                            multiline rows={4} label="Job Listing"   {...field} />}
-                                    />
-
-                                    <Stack direction="row" spacing={2}>
+                                    <Stack flex={1} direction="row" alignItems="flex-end" spacing={2}>
                                         <Button sx={{ flex: 1 }} onClick={decrementStep}>Back</Button>
                                         <Button sx={{ flex: 1 }} onClick={incrementStep}>Next</Button>
                                     </Stack>
                                 </>
+                            )
+                        }
 
-                            )}
 
-                            {step === 3 && (
+                        {
+                            step === 2 && (
                                 <>
-                                    <Typography variant="h6" color="textPrimary" >Extra Instructions</Typography>
-
-                                    <Controller
-                                        name="length"
-                                        control={control}
-                                        render={({ field }) => <Input type="number" label="Length (words)"  {...field}
-                                            helperText="
-                                        Number of words to generate.
-                                    "
-
-                                        />}
-                                    />
-                                    <Controller
-                                        name="paragraphs"
-                                        control={control}
-                                        render={({ field }) => <Input type="number" label="Paragraphs"  {...field}
-                                            helperText="Number of paragraphs to generate."
-
-                                        />}
-                                    />
-                                    <Stack direction="row" spacing={2}>
-
+                                    <Stack flex={1} direction="row" alignItems="flex-end" spacing={2}>
                                         <Button sx={{ flex: 1 }} onClick={decrementStep}>Back</Button>
-                                        <Button sx={{ flex: 1 }} type="submit">Generate</Button>
+                                        <Button sx={{ flex: 1 }} onClick={incrementStep}>Generate</Button>
                                     </Stack>
-
                                 </>
-                            )}
+                            )
+                        }
+
+                    </Stack>
+                </Paper>
 
 
-
-                        </Stack>
-
-                    </form>
-                </Stack>
-                <Stack spacing={2} padding={2} flex={5} sx={{ backgroundColor: "#F6F5F4" }}>
-                    <Typography variant="h6" >Preview</Typography>
-                </Stack>
             </Stack>
 
         </CoreLayout>

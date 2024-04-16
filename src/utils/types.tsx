@@ -38,6 +38,7 @@ export type TCoverLetterFormInputs = {
     role: string;
     resume: string;
     jobListing: string;
+    company: string;
     length?: number
     paragraphs?: number
 }

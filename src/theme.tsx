@@ -8,15 +8,14 @@ const theme = createTheme({
             main: '#FF5A00',
         },
         secondary: {
-            main: '#4B0082',
+            main: '#00a5ff',
         },
         error: {
             main: red.A400,
         },
         text: {
             primary: '#36454F',
-            secondary: '#FF5A00',
-        }
+        },
     },
 
 });
