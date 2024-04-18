@@ -15,7 +15,7 @@ const Input = (
 ) => {
   return (
     <FormControl>
-      <Typography>{label}</Typography>
+      <Typography sx={{ opacity: 0.8 }}>{label}</Typography>
       <MuiOutlinedInput ref={ref} {...props} size="small" />
       <HelperText>{helperText}</HelperText>
     </FormControl>

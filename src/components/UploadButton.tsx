@@ -1,6 +1,6 @@
-import { Button, ButtonProps } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-
+import { Button, ButtonProps } from "@mui/material";
+import CheckIcon from "@mui/icons-material/Check";
 type UploadButtonProps = {
   onChange: (e: any) => void;
   success: boolean;
@@ -17,7 +17,7 @@ const UploadButton = ({
     <Button
       component="label"
       role={undefined}
-      startIcon={<CloudUploadIcon />}
+      startIcon={!success ? <CloudUploadIcon /> : <CheckIcon />}
       color={!success ? "secondary" : "success"}
       {...rest}
     >

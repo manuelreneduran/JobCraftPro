@@ -1,19 +1,17 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { Button, Divider, Paper } from "@mui/material";
 import Stack from "@mui/material/Stack";
-import { useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { useMemo, useState } from "react";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import Input from "../components/Input";
-import SecondaryButton from "../components/SecondaryButton";
 import Stepper from "../components/Stepper";
 import Typography from "../components/Typography";
+import UploadButton from "../components/UploadButton";
 import CoreLayout from "../layouts/CoreLayout";
 import { useGenerateCoverLetterMutation } from "../services/api";
 import { colors } from "../styles/colors";
 import { TCoverLetterFormInputs } from "../utils/types";
 import { coverLetterFormSchema } from "../utils/validation";
-import UploadButton from "../components/UploadButton";
 
 const defaultFormValues: TCoverLetterFormInputs = {
   resume: {
@@ -52,6 +50,8 @@ const CoverLetterPage = () => {
   });
 
   const resumePDF = watch("resume.resumePDF");
+  const resumeText = watch("resume.resumeText");
+  const jobListingText = watch("jobListing.jobListingText");
 
   const onSubmit: SubmitHandler<TCoverLetterFormInputs> = (data) =>
     triggerGenerateCoverLetter(data);
@@ -65,10 +65,24 @@ const CoverLetterPage = () => {
   const decrementStep = () => setActiveStep(activeStep - 1);
 
   const steps = [
-    "Upload Resume",
-    "Upload Job Description",
-    "Configure Parameters",
+    {
+      number: 0,
+      title: "Upload Resume",
+      body: "Leverage the power of AI to build a custom cover letter for your next job application. Upload your resume to get started.",
+    },
+    {
+      number: 1,
+      title: "Upload Job Description",
+      body: "Upload the job description for the role you are applying for. This will help us tailor your cover letter to the job.",
+    },
+    {
+      number: 2,
+      title: "Configure Parameters",
+      body: "Configure additional parameters to customize your cover letter.",
+    },
   ];
+
+  const stepTitles = useMemo(() => steps.map((step) => step.title), [steps]);
 
   const validateStep = async (activeStep: number) => {
     switch (activeStep) {
@@ -82,6 +96,21 @@ const CoverLetterPage = () => {
         return false;
     }
   };
+
+  // return false if disabled
+  const enableNext = useMemo(() => {
+    switch (activeStep) {
+      case 0:
+        return !!resumePDF || !!resumeText;
+      case 1:
+        return !!jobListingText;
+      case 2:
+        return true;
+      default:
+        return false;
+    }
+  }, [activeStep, resumePDF, resumeText, jobListingText]);
+
   return (
     <CoreLayout>
       <Stack
@@ -103,14 +132,9 @@ const CoverLetterPage = () => {
               <Typography variant="h5" textAlign="center">
                 Generate Cover Letter
               </Typography>
-              <Stepper activeStep={activeStep} steps={steps} />
+              <Stepper activeStep={activeStep} steps={stepTitles} />
             </Stack>
             <Divider sx={{ marginY: "2rem" }} />
-
-            <Typography fontStyle="italic">
-              Leverage the power of AI to build a custom cover letter for your
-              next job application. Upload your resume to get started.
-            </Typography>
             <form
               style={{
                 flex: 1,
@@ -120,40 +144,62 @@ const CoverLetterPage = () => {
               }}
               onSubmit={handleSubmit(onSubmit)}
             >
-              <Stack flex={2} justifyContent="center" alignItems="center">
+              {/** BODY **/}
+              <Stack flex={2}>
                 {activeStep === 0 ? (
                   <>
-                    <UploadButton
-                      onChange={(e: any) =>
-                        setValue("resume.resumePDF", e.target.files[0])
-                      }
-                      success={!!resumePDF}
-                      text={!resumePDF ? "Upload Resume" : "Resume Uploaded"}
-                    />
-
-                    {formErrors.resume?.resumeText && (
-                      <Typography color="error">
-                        {formErrors.resume?.resumeText.message}
-                      </Typography>
-                    )}
+                    <Typography fontSize="14px" fontStyle="italic">
+                      Leverage the power of AI to build a custom cover letter
+                      for your next job application. Upload your resume to get
+                      started.
+                    </Typography>
+                    <Stack flex={1} justifyContent="center" alignItems="center">
+                      <UploadButton
+                        variant="contained"
+                        sx={{ color: "white" }}
+                        onChange={(e: any) =>
+                          setValue("resume.resumePDF", e.target.files[0])
+                        }
+                        success={!!resumePDF}
+                        text={!resumePDF ? "Upload Resume" : "Resume Uploaded"}
+                      />
+                    </Stack>
                   </>
                 ) : activeStep === 1 ? (
-                  <SecondaryButton
-                    startIcon={<CloudUploadIcon />}
-                    sx={{ backgroundColor: colors.button.secondary.main }}
-                  >
-                    Upload Job Description
-                  </SecondaryButton>
+                  <>
+                    <Typography fontSize="14px" fontStyle="italic">
+                      Upload the job description for the role you are applying
+                      for. This will help us tailor your cover letter to the
+                      job.
+                    </Typography>
+                    <Stack flex={1} justifyContent="center">
+                      <Controller
+                        name="jobListing.jobListingText"
+                        control={control}
+                        render={({ field }) => (
+                          <Input
+                            {...field}
+                            name="jobListingText"
+                            placeholder="Paste job description here"
+                            required
+                            multiline
+                            rows={4}
+                          />
+                        )}
+                      />
+                    </Stack>
+                  </>
                 ) : (
-                  <Input
-                    name="name"
-                    label="Your Name"
-                    placeholder="John Doe"
-                    required
-                  />
+                  <>
+                    <Typography fontSize="14px" fontStyle="italic">
+                      Configure additional parameters to customize your cover
+                      letter.
+                    </Typography>
+                  </>
                 )}
               </Stack>
 
+              {/** FOOTER **/}
               <Stack
                 flex={1}
                 direction="row"
@@ -172,7 +218,11 @@ const CoverLetterPage = () => {
                     Generate
                   </Button>
                 ) : (
-                  <Button variant="text" onClick={incrementStep}>
+                  <Button
+                    disabled={!enableNext}
+                    variant="text"
+                    onClick={incrementStep}
+                  >
                     Next
                   </Button>
                 )}
