@@ -1,5 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Button, Divider, Paper } from "@mui/material";
+import { Button, Divider, Paper, Slider } from "@mui/material";
 import Stack from "@mui/material/Stack";
 import { useMemo, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
@@ -22,11 +22,8 @@ const defaultFormValues: TCoverLetterFormInputs = {
     jobListingText: "",
   },
   parameters: {
-    name: "",
-    company: "",
-    role: "",
-    length: 0,
-    paragraphs: 0,
+    length: 200,
+    paragraphs: 4,
   },
 };
 
@@ -37,24 +34,28 @@ const CoverLetterPage = () => {
 
   const [triggerGenerateCoverLetter] = useGenerateCoverLetterMutation();
 
-  const {
-    handleSubmit,
-    formState: { errors: formErrors },
-    control,
-    watch,
-    trigger,
-    setValue,
-  } = useForm<TCoverLetterFormInputs>({
-    defaultValues: defaultFormValues,
-    resolver: yupResolver(coverLetterFormSchema),
-  });
+  const { handleSubmit, control, watch, trigger, setValue } =
+    useForm<TCoverLetterFormInputs>({
+      mode: "all",
+      defaultValues: defaultFormValues,
+      resolver: yupResolver(coverLetterFormSchema),
+    });
 
   const resumePDF = watch("resume.resumePDF");
   const resumeText = watch("resume.resumeText");
   const jobListingText = watch("jobListing.jobListingText");
 
-  const onSubmit: SubmitHandler<TCoverLetterFormInputs> = (data) =>
-    triggerGenerateCoverLetter(data);
+  const onSubmit: SubmitHandler<TCoverLetterFormInputs> = (data) => {
+    let form = {
+      resumeText: data.resume?.resumeText,
+      resumePDF: data.resume?.resumePDF,
+      jobListingText: data.jobListing?.jobListingText,
+      length: data.parameters.length?.toString(),
+      paragraphs: data.parameters.paragraphs?.toString(),
+    };
+
+    triggerGenerateCoverLetter(form);
+  };
 
   const incrementStep = async () => {
     if (await validateStep(activeStep)) {
@@ -72,7 +73,7 @@ const CoverLetterPage = () => {
     },
     {
       number: 1,
-      title: "Upload Job Description",
+      title: "Add Job Description",
       body: "Upload the job description for the role you are applying for. This will help us tailor your cover letter to the job.",
     },
     {
@@ -142,7 +143,6 @@ const CoverLetterPage = () => {
                 display: "flex",
                 justifyContent: "space-between",
               }}
-              onSubmit={handleSubmit(onSubmit)}
             >
               {/** BODY **/}
               <Stack flex={2}>
@@ -190,12 +190,48 @@ const CoverLetterPage = () => {
                     </Stack>
                   </>
                 ) : (
-                  <>
+                  <Stack spacing={3}>
                     <Typography fontSize="14px" fontStyle="italic">
                       Configure additional parameters to customize your cover
-                      letter.
+                      letter. The default values are recommended.
                     </Typography>
-                  </>
+                    <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+                      <Stack flex={1}>
+                        <Typography fontSize="14px">Length (words)</Typography>
+                        <Controller
+                          name="parameters.length"
+                          control={control}
+                          render={({ field }) => (
+                            <Slider
+                              {...field}
+                              step={25}
+                              marks
+                              min={50}
+                              max={300}
+                              valueLabelDisplay="on"
+                            />
+                          )}
+                        />
+                      </Stack>
+                      <Stack flex={1}>
+                        <Typography fontSize="14px">Paragraphs</Typography>
+                        <Controller
+                          name="parameters.paragraphs"
+                          control={control}
+                          render={({ field }) => (
+                            <Slider
+                              {...field}
+                              step={1}
+                              marks
+                              min={1}
+                              max={6}
+                              valueLabelDisplay="on"
+                            />
+                          )}
+                        />
+                      </Stack>
+                    </Stack>
+                  </Stack>
                 )}
               </Stack>
 
@@ -214,7 +250,7 @@ const CoverLetterPage = () => {
                   Back
                 </Button>
                 {activeStep === MAX_STEPS - 1 ? (
-                  <Button variant="contained" type="submit">
+                  <Button variant="contained" onClick={handleSubmit(onSubmit)}>
                     Generate
                   </Button>
                 ) : (

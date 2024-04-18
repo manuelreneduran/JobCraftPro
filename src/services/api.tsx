@@ -1,6 +1,9 @@
 // Need to use the React-specific entry point to allow generating React hooks
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import type { TCoverLetterFormInputs, TQueryResponse } from "../utils/types";
+import type {
+  TGenerateCoverLetterRequest,
+  TQueryResponse,
+} from "../utils/types";
 
 export const api = createApi({
   reducerPath: "api",
@@ -8,13 +11,35 @@ export const api = createApi({
   endpoints: (builder) => ({
     generateCoverLetter: builder.mutation<
       TQueryResponse<string>,
-      TCoverLetterFormInputs
+      TGenerateCoverLetterRequest
     >({
-      query: (body) => ({
-        url: "generate-cover-letter",
-        method: "POST",
-        body,
-      }),
+      query: (body) => {
+        let formData = new FormData();
+        // formData.append("jobListingText", body.jobListingText);
+
+        if (body.resumePDF) {
+          formData.append("resumePDF", body.resumePDF);
+        }
+        // if (body.resumeText) {
+        //   formData.append("resumeText", body.resumeText);
+        // }
+        // if (body.length) {
+        //   formData.append("length", body.length);
+        // }
+        // if (body.paragraphs) {
+        //   formData.append("paragraphs", body.paragraphs);
+        // }
+        console.log(body);
+        return {
+          url: "generate-cover-letter",
+          method: "POST",
+          body: formData,
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "multipart/form-data;",
+          },
+        };
+      },
     }),
   }),
 });

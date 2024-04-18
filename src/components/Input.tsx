@@ -8,16 +8,18 @@ import { forwardRef } from "react";
 
 type TInputProps = {
   helperText?: string | JSX.Element;
+  errorText?: string;
 } & OutlinedInputProps;
 const Input = (
-  { helperText, label, ...props }: TInputProps,
+  { helperText, label, errorText, ...props }: TInputProps,
   ref: React.ForwardedRef<HTMLDivElement>
 ) => {
   return (
     <FormControl>
-      <Typography sx={{ opacity: 0.8 }}>{label}</Typography>
-      <MuiOutlinedInput ref={ref} {...props} size="small" />
-      <HelperText>{helperText}</HelperText>
+      <Typography fontSize="14px">{label}</Typography>
+      <MuiOutlinedInput color="secondary" ref={ref} {...props} size="small" />
+      {helperText && !props.error && <HelperText>{helperText}</HelperText>}
+      {errorText && <HelperText color="error">{errorText}</HelperText>}
     </FormControl>
   );
 };

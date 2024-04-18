@@ -25,11 +25,7 @@ export const coverLetterFormSchema = yup.object().shape({
     jobListingText: yup.string().trim().required(),
   }),
   parameters: yup.object().shape({
-    name: yup.string().trim().required(),
-    company: yup.string().trim().required(),
-    role: yup.string().trim().required(),
-
-    length: yup.number(),
+    length: yup.number().positive("Must be a positive number."),
     paragraphs: yup.number(),
   }),
 });

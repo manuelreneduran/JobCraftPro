@@ -21,6 +21,15 @@ export type TQueryResponse<T> = {
   result: T;
 };
 
+/* API Request Types */
+export type TGenerateCoverLetterRequest = {
+  resumeText?: string;
+  resumePDF?: any;
+  jobListingText: string;
+  length?: string;
+  paragraphs?: string;
+};
+
 /* Auth Types */
 
 export type TUser = {
@@ -40,9 +49,6 @@ export type TCoverLetterFormInputs = {
     jobListingText: string;
   };
   parameters: {
-    name: string;
-    company: string;
-    role: string;
     length?: number;
     paragraphs?: number;
   };
