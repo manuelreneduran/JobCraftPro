@@ -15,29 +15,24 @@ export const api = createApi({
     >({
       query: (body) => {
         let formData = new FormData();
-        // formData.append("jobListingText", body.jobListingText);
+        formData.append("jobListingText", body.jobListingText);
 
         if (body.resumePDF) {
           formData.append("resumePDF", body.resumePDF);
         }
-        // if (body.resumeText) {
-        //   formData.append("resumeText", body.resumeText);
-        // }
-        // if (body.length) {
-        //   formData.append("length", body.length);
-        // }
-        // if (body.paragraphs) {
-        //   formData.append("paragraphs", body.paragraphs);
-        // }
-        console.log(body);
+        if (body.resumeText) {
+          formData.append("resumeText", body.resumeText);
+        }
+        if (body.length) {
+          formData.append("length", body.length);
+        }
+        if (body.paragraphs) {
+          formData.append("paragraphs", body.paragraphs);
+        }
         return {
-          url: "generate-cover-letter",
+          url: "generate/cover-letter",
           method: "POST",
           body: formData,
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "multipart/form-data;",
-          },
         };
       },
     }),
