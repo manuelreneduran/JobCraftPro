@@ -9,6 +9,7 @@ import { auth, registerWithEmailAndPassword } from "../services/firebase";
 import { TRegistrationFormInputs } from "../utils/types";
 import { registerFormSchema } from "../utils/validation";
 import { useAuthState } from "react-firebase-hooks/auth";
+import logo from "../assets/logo.svg";
 
 const defaultRegisterFormValues = {
   email: "",
@@ -60,13 +61,22 @@ const RegisterPage = () => {
             display: "flex",
             padding: 4,
             width: { sm: "40%" },
-            height: { xs: "100%", sm: "60%" },
+            height: { xs: "100%", sm: "70%" },
             flexDirection: "column",
             justifyContent: { xs: "center", sm: "space-between" },
           }}
         >
-          <Typography variant="h4">Sign up</Typography>
-
+          <img
+            style={{
+              height: "56px",
+              width: "auto",
+            }}
+            src={logo}
+            alt="JobCraftPro Logo"
+          />
+          <Typography textAlign="center" variant="h4">
+            Sign up
+          </Typography>
           <form
             onSubmit={handleSubmit(onSubmit)}
             style={{

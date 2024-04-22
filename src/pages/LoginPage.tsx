@@ -22,6 +22,7 @@ import {
 } from "../services/firebase";
 import { TLoginFormInputs } from "../utils/types";
 import { loginFormSchema } from "../utils/validation";
+import logo from "../assets/logo.svg";
 
 const defaultLoginFormValues = {
   email: "",
@@ -82,13 +83,23 @@ const Login = () => {
             sx={{
               display: "flex",
               padding: 4,
-              width: { sm: "40%" },
-              height: { xs: "100%", sm: "60%" },
+              width: { sm: "50%" },
+              height: { xs: "100%", sm: "70%" },
               flexDirection: "column",
               justifyContent: { xs: "center", sm: "space-between" },
             }}
           >
-            <Typography variant="h4">Sign in</Typography>
+            <img
+              style={{
+                height: "56px",
+                width: "auto",
+              }}
+              src={logo}
+              alt="JobCraftPro Logo"
+            />
+            <Typography textAlign="center" variant="h4">
+              Sign in
+            </Typography>
             <form
               onSubmit={handleSubmit(onSubmit)}
               style={{
@@ -141,7 +152,7 @@ const Login = () => {
                   variant="contained"
                   type="submit"
                 >
-                  Login
+                  Sign In
                 </Button>
                 <Divider>or</Divider>
                 <Button
