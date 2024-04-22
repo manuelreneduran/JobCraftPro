@@ -1,5 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Button, Divider, Paper, Stack, TextField } from "@mui/material";
+import { Button, Paper, Stack, TextField } from "@mui/material";
 import { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
@@ -8,16 +8,15 @@ import Loader from "../components/Loader";
 import Typography from "../components/Typography";
 import useAlert from "../hooks/useAlert";
 import CoreLayout from "../layouts/CoreLayout";
-import { auth, logInWithEmailAndPassword } from "../services/firebase";
-import { TLoginFormInputs } from "../utils/types";
-import { loginFormSchema } from "../utils/validation";
+import { auth, sendPasswordReset } from "../services/firebase";
+import { TResetPasswordFormInputs } from "../utils/types";
+import { resetPasswordFormSchema } from "../utils/validation";
 
-const defaultLoginFormValues = {
+const defaultResetPasswordFormValues = {
   email: "",
-  password: "",
 };
 
-const Login = () => {
+const ResetPasswordPage = () => {
   const navigate = useNavigate();
 
   const [user, loading] = useAuthState(auth);
@@ -30,22 +29,23 @@ const Login = () => {
     handleSubmit,
     control,
     formState: { errors },
-  } = useForm<TLoginFormInputs>({
-    defaultValues: defaultLoginFormValues,
-    resolver: yupResolver(loginFormSchema),
+  } = useForm<TResetPasswordFormInputs>({
+    defaultValues: defaultResetPasswordFormValues,
+    resolver: yupResolver(resetPasswordFormSchema),
   });
 
   const { setAlert } = useAlert();
 
-  const onSubmit: SubmitHandler<TLoginFormInputs> = async ({
+  const onSubmit: SubmitHandler<TResetPasswordFormInputs> = async ({
     email,
-    password,
   }) => {
     try {
-      await logInWithEmailAndPassword(email, password);
-    } catch (e: any) {
-      setAlert(e.message, "error");
-    }
+      await sendPasswordReset(email);
+      setAlert(
+        "If email is valid a password reset email has been sent",
+        "success"
+      );
+    } catch {}
   };
 
   return (
@@ -64,18 +64,19 @@ const Login = () => {
               display: "flex",
               padding: 4,
               width: { sm: "40%" },
-              height: { xs: "100%", sm: "60%" },
+              height: { xs: "100%", sm: "30%" },
               flexDirection: "column",
               justifyContent: { xs: "center", sm: "space-between" },
             }}
           >
-            <Typography variant="h4">Sign in</Typography>
+            <Typography variant="h4">Reset Password</Typography>
             <form
               onSubmit={handleSubmit(onSubmit)}
               style={{
                 display: "flex",
                 flexDirection: "column",
                 marginTop: "1rem",
+                justifyContent: "center",
               }}
             >
               <Controller
@@ -95,26 +96,8 @@ const Login = () => {
                   />
                 )}
               />
-              <Controller
-                name="password"
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    variant="outlined"
-                    size="small"
-                    color="secondary"
-                    type="password"
-                    placeholder="Password"
-                    error={!!errors.password}
-                    helperText={
-                      errors.password?.message ? errors.password.message : " "
-                    }
-                  />
-                )}
-              />
               <span>
-                <Link to="/reset-password">Forgot password?</Link>
+                <Link to="/login">Sign in</Link>
               </span>
               <Stack flex={1} justifyContent="flex-end">
                 <Button
@@ -122,15 +105,7 @@ const Login = () => {
                   variant="contained"
                   type="submit"
                 >
-                  Login
-                </Button>
-                <Divider>or</Divider>
-                <Button
-                  sx={{ margin: "1rem 0 1rem 0" }}
-                  variant="outlined"
-                  onClick={() => navigate("/register")}
-                >
-                  Sign Up
+                  Reset Password
                 </Button>
               </Stack>
             </form>
@@ -141,4 +116,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default ResetPasswordPage;

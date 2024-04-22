@@ -10,11 +10,11 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import { useState } from "react";
-import { useAuth } from "../hooks/useAuth";
 import { EMenuItemSettings, EPages, EPaths } from "../utils/types";
 import logo from "../assets/logo.svg";
 import { useNavigate } from "react-router-dom";
 import Typography from "./Typography";
+import { auth, logout } from "../services/firebase";
 
 const pages: EPages[] = [EPages.DASHBOARD, EPages.COVER_LETTER];
 const settings: EMenuItemSettings[] = [EMenuItemSettings.LOGOUT];
@@ -24,7 +24,6 @@ const Header = () => {
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -178,7 +177,6 @@ const Header = () => {
                       height: "32px",
                       width: "32px",
                     }}
-                    src={user?.picture}
                   />
                 </IconButton>
               </Tooltip>

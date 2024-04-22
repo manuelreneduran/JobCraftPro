@@ -28,26 +28,33 @@ const defaultFormValues: TCoverLetterFormInputs = {
   },
 };
 
-const MAX_STEPS = 3;
+const MAX_STEPS = 4;
 
 const CoverLetterPage = () => {
   const [activeStep, setActiveStep] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const [triggerGenerateCoverLetter, { isLoading }] =
     useGenerateCoverLetterMutation();
 
-  const { handleSubmit, control, watch, trigger, setValue } =
-    useForm<TCoverLetterFormInputs>({
-      mode: "all",
-      defaultValues: defaultFormValues,
-      resolver: yupResolver(coverLetterFormSchema),
-    });
+  const {
+    handleSubmit,
+    control,
+    watch,
+    trigger,
+    setValue,
+    reset: resetForm,
+  } = useForm<TCoverLetterFormInputs>({
+    mode: "all",
+    defaultValues: defaultFormValues,
+    resolver: yupResolver(coverLetterFormSchema),
+  });
 
   const resumePDF = watch("resume.resumePDF");
   const resumeText = watch("resume.resumeText");
   const jobListingText = watch("jobListing.jobListingText");
 
-  const onSubmit: SubmitHandler<TCoverLetterFormInputs> = (data) => {
+  const onSubmit: SubmitHandler<TCoverLetterFormInputs> = async (data) => {
     let form = {
       resumeText: data.resume?.resumeText,
       resumePDF: data.resume?.resumePDF,
@@ -69,19 +76,20 @@ const CoverLetterPage = () => {
 
   const steps = [
     {
-      number: 0,
+      id: 0,
       title: "Upload Resume",
-      body: "Leverage the power of AI to build a custom cover letter for your next job application. Upload your resume to get started.",
     },
     {
-      number: 1,
+      id: 1,
       title: "Add Job Description",
-      body: "Upload the job description for the role you are applying for. This will help us tailor your cover letter to the job.",
     },
     {
-      number: 2,
+      id: 2,
       title: "Configure Parameters",
-      body: "Configure additional parameters to customize your cover letter.",
+    },
+    {
+      id: 3,
+      title: "Download Cover Letter",
     },
   ];
 
@@ -114,6 +122,10 @@ const CoverLetterPage = () => {
     }
   }, [activeStep, resumePDF, resumeText, jobListingText]);
 
+  const reset = () => {
+    setActiveStep(0);
+    resetForm();
+  };
   return (
     <CoreLayout>
       <Stack
@@ -130,136 +142,140 @@ const CoverLetterPage = () => {
             height: { xs: "100%", sm: "75%" },
           }}
         >
-          {isLoading ? (
-            <Stack flex={1} justifyContent="center" alignItems="center">
-              <Loader text="Generating Cover Letter... this may take a moment." />
+          <Stack flex={1} padding={2}>
+            <Stack spacing={2}>
+              <Typography variant="h5" textAlign="center">
+                Generate Cover Letter
+              </Typography>
+              <Stepper activeStep={activeStep} steps={stepTitles} />
             </Stack>
-          ) : (
-            <Stack flex={1} padding={2}>
-              <Stack spacing={2}>
-                <Typography variant="h5" textAlign="center">
-                  Generate Cover Letter
-                </Typography>
-                <Stepper activeStep={activeStep} steps={stepTitles} />
-              </Stack>
-              <Divider sx={{ marginY: "2rem" }} />
-              <form
-                style={{
-                  flex: 1,
-                  flexDirection: "column",
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-              >
-                {/** BODY **/}
-                <Stack flex={2}>
-                  {activeStep === 0 ? (
-                    <>
-                      <Typography fontSize="14px" fontStyle="italic">
-                        Leverage the power of AI to build a custom cover letter
-                        for your next job application. Upload your resume to get
-                        started.
-                      </Typography>
+            <Divider sx={{ marginY: "2rem" }} />
+            <form
+              style={{
+                flex: 1,
+                flexDirection: "column",
+                display: "flex",
+                justifyContent: "space-between",
+              }}
+            >
+              {/** BODY **/}
+              <Stack flex={2}>
+                {activeStep === 0 ? (
+                  <>
+                    <Typography fontSize="14px" fontStyle="italic">
+                      Leverage the power of AI to build a custom cover letter
+                      for your next job application. Upload your resume to get
+                      started.
+                    </Typography>
+                    <Stack flex={1} justifyContent="center" alignItems="center">
+                      <UploadButton
+                        variant="contained"
+                        sx={{ color: "white" }}
+                        onChange={(e: any) =>
+                          setValue("resume.resumePDF", e.target.files[0])
+                        }
+                        success={!!resumePDF}
+                        text={!resumePDF ? "Upload Resume" : "Resume Uploaded"}
+                      />
+                    </Stack>
+                  </>
+                ) : activeStep === 1 ? (
+                  <>
+                    <Typography fontSize="14px" fontStyle="italic">
+                      Upload the job description for the role you are applying
+                      for. This will help us tailor your cover letter to the
+                      job.
+                    </Typography>
+                    <Stack flex={1} justifyContent="center">
+                      <Controller
+                        name="jobListing.jobListingText"
+                        control={control}
+                        render={({ field }) => (
+                          <Input
+                            {...field}
+                            name="jobListingText"
+                            placeholder="Paste job description here"
+                            required
+                            multiline
+                            rows={4}
+                          />
+                        )}
+                      />
+                    </Stack>
+                  </>
+                ) : activeStep === 2 ? (
+                  <Stack spacing={3}>
+                    <Typography fontSize="14px" fontStyle="italic">
+                      Configure additional parameters to customize your cover
+                      letter. The default values are recommended.
+                    </Typography>
+                    <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+                      <Stack flex={1}>
+                        <Typography fontSize="14px">Length (words)</Typography>
+                        <Controller
+                          name="parameters.length"
+                          control={control}
+                          render={({ field }) => (
+                            <Slider
+                              {...field}
+                              step={25}
+                              marks
+                              min={50}
+                              max={300}
+                              valueLabelDisplay="on"
+                            />
+                          )}
+                        />
+                      </Stack>
+                      <Stack flex={1}>
+                        <Typography fontSize="14px">Paragraphs</Typography>
+                        <Controller
+                          name="parameters.paragraphs"
+                          control={control}
+                          render={({ field }) => (
+                            <Slider
+                              {...field}
+                              step={1}
+                              marks
+                              min={1}
+                              max={6}
+                              valueLabelDisplay="on"
+                            />
+                          )}
+                        />
+                      </Stack>
+                    </Stack>
+                  </Stack>
+                ) : (
+                  <>
+                    {loading ? (
                       <Stack
                         flex={1}
                         justifyContent="center"
                         alignItems="center"
                       >
-                        <UploadButton
-                          variant="contained"
-                          sx={{ color: "white" }}
-                          onChange={(e: any) =>
-                            setValue("resume.resumePDF", e.target.files[0])
-                          }
-                          success={!!resumePDF}
-                          text={
-                            !resumePDF ? "Upload Resume" : "Resume Uploaded"
-                          }
-                        />
+                        <Loader text="Generating Cover Letter... this may take a moment." />
                       </Stack>
-                    </>
-                  ) : activeStep === 1 ? (
-                    <>
-                      <Typography fontSize="14px" fontStyle="italic">
-                        Upload the job description for the role you are applying
-                        for. This will help us tailor your cover letter to the
-                        job.
-                      </Typography>
-                      <Stack flex={1} justifyContent="center">
-                        <Controller
-                          name="jobListing.jobListingText"
-                          control={control}
-                          render={({ field }) => (
-                            <Input
-                              {...field}
-                              name="jobListingText"
-                              placeholder="Paste job description here"
-                              required
-                              multiline
-                              rows={4}
-                            />
-                          )}
-                        />
-                      </Stack>
-                    </>
-                  ) : (
-                    <Stack spacing={3}>
-                      <Typography fontSize="14px" fontStyle="italic">
-                        Configure additional parameters to customize your cover
-                        letter. The default values are recommended.
-                      </Typography>
-                      <Stack
-                        direction={{ xs: "column", sm: "row" }}
-                        spacing={2}
+                    ) : (
+                      <Button
+                        variant="contained"
+                        onClick={handleSubmit(onSubmit)}
                       >
-                        <Stack flex={1}>
-                          <Typography fontSize="14px">
-                            Length (words)
-                          </Typography>
-                          <Controller
-                            name="parameters.length"
-                            control={control}
-                            render={({ field }) => (
-                              <Slider
-                                {...field}
-                                step={25}
-                                marks
-                                min={50}
-                                max={300}
-                                valueLabelDisplay="on"
-                              />
-                            )}
-                          />
-                        </Stack>
-                        <Stack flex={1}>
-                          <Typography fontSize="14px">Paragraphs</Typography>
-                          <Controller
-                            name="parameters.paragraphs"
-                            control={control}
-                            render={({ field }) => (
-                              <Slider
-                                {...field}
-                                step={1}
-                                marks
-                                min={1}
-                                max={6}
-                                valueLabelDisplay="on"
-                              />
-                            )}
-                          />
-                        </Stack>
-                      </Stack>
-                    </Stack>
-                  )}
-                </Stack>
+                        Download Cover Letter
+                      </Button>
+                    )}
+                  </>
+                )}
+              </Stack>
 
-                {/** FOOTER **/}
-                <Stack
-                  flex={1}
-                  direction="row"
-                  alignItems="flex-end"
-                  justifyContent="space-between"
-                >
+              {/** FOOTER **/}
+              <Stack
+                flex={1}
+                direction="row"
+                alignItems="flex-end"
+                justifyContent="space-between"
+              >
+                {activeStep !== MAX_STEPS - 1 ? (
                   <Button
                     variant="text"
                     disabled={activeStep === 0}
@@ -267,26 +283,28 @@ const CoverLetterPage = () => {
                   >
                     Back
                   </Button>
-                  {activeStep === MAX_STEPS - 1 ? (
-                    <Button
-                      variant="contained"
-                      onClick={handleSubmit(onSubmit)}
-                    >
-                      Generate
-                    </Button>
-                  ) : (
-                    <Button
-                      disabled={!enableNext}
-                      variant="text"
-                      onClick={incrementStep}
-                    >
-                      Next
-                    </Button>
-                  )}
-                </Stack>
-              </form>
-            </Stack>
-          )}
+                ) : null}
+
+                {activeStep === MAX_STEPS - 1 ? (
+                  <Button variant="contained" onClick={reset}>
+                    Reset
+                  </Button>
+                ) : activeStep === 2 ? (
+                  <Button variant="contained" onClick={incrementStep}>
+                    Generate
+                  </Button>
+                ) : (
+                  <Button
+                    disabled={!enableNext}
+                    variant="text"
+                    onClick={incrementStep}
+                  >
+                    Next
+                  </Button>
+                )}
+              </Stack>
+            </form>
+          </Stack>
         </Paper>
       </Stack>
     </CoreLayout>

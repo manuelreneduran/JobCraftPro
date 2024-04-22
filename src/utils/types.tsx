@@ -5,14 +5,15 @@ export enum EPages {
 }
 
 export enum EPaths {
-  DASHBOARD = "/",
+  DASHBOARD = "/dashboard",
   LOGIN = "/login",
+  REGISTER = "/register",
   COVER_LETTER = "/cover-letter",
+  RESET_PASSWORD = "/reset-password",
 }
 
 export enum EMenuItemSettings {
   LOGOUT = "Logout",
-  LOGIN = "Login",
 }
 
 /* API Response Types */
@@ -37,6 +38,21 @@ export type TUser = {
   exp: number;
   name: string;
   picture: string;
+};
+
+export type TLoginFormInputs = {
+  email: string;
+  password: string;
+};
+
+export type TRegistrationFormInputs = {
+  email: string;
+  password: string;
+  confirmPassword: string;
+};
+
+export type TResetPasswordFormInputs = {
+  email: string;
 };
 
 /* Form Types */

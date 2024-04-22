@@ -29,3 +29,27 @@ export const coverLetterFormSchema = yup.object().shape({
     paragraphs: yup.number(),
   }),
 });
+
+/* Login Form */
+export const loginFormSchema = yup.object().shape({
+  email: yup.string().email().required(),
+  password: yup.string().required(),
+});
+
+/* Registration Form */
+export const registerFormSchema = yup.object().shape({
+  email: yup.string().email().required(),
+  password: yup
+    .string()
+    .min(6, "Password must be at least 6 characters.")
+    .required(),
+  confirmPassword: yup
+    .string()
+    .oneOf([yup.ref("password"), undefined], "Passwords must match.")
+    .required(),
+});
+
+/* Reset Password Form */
+export const resetPasswordFormSchema = yup.object().shape({
+  email: yup.string().email().required(),
+});

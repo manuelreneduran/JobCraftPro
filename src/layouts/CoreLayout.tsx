@@ -4,16 +4,17 @@ import useAppBarHeight from "../hooks/useAppBarHeight";
 
 type CoreLayoutProps = {
   children: React.ReactNode;
+  useHeader?: boolean;
 };
 
-const CoreLayout = ({ children }: CoreLayoutProps) => {
+const CoreLayout = ({ children, useHeader = true }: CoreLayoutProps) => {
   const appBarHeight = useAppBarHeight();
   return (
     <Box className="core-layout">
-      <Header />
+      {useHeader && <Header />}
       <Box
         className="core-layout-children-wrapper"
-        height={`calc(100vh - ${appBarHeight}px)`}
+        height={useHeader ? `calc(100vh - ${appBarHeight}px)` : "100vh"}
       >
         {children}
       </Box>

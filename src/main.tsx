@@ -1,5 +1,4 @@
 import { ThemeProvider } from "@emotion/react";
-import { GoogleOAuthProvider } from "@react-oauth/google";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
@@ -8,19 +7,18 @@ import App from "./App.tsx";
 import "./index.css";
 import { store } from "./store";
 import theme from "./theme.tsx";
-
-const clientId = import.meta.env.VITE_OAUTH_CLIENT_ID;
+import { AlertProvider } from "./context/AlertContext.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <GoogleOAuthProvider clientId={clientId}>
-      <Provider store={store}>
-        <ThemeProvider theme={theme}>
-          <BrowserRouter>
+    <Provider store={store}>
+      <ThemeProvider theme={theme}>
+        <BrowserRouter>
+          <AlertProvider>
             <App />
-          </BrowserRouter>
-        </ThemeProvider>
-      </Provider>
-    </GoogleOAuthProvider>
+          </AlertProvider>
+        </BrowserRouter>
+      </ThemeProvider>
+    </Provider>
   </React.StrictMode>
 );
