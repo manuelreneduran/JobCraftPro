@@ -1,5 +1,12 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Button, Divider, Paper, Stack, TextField } from "@mui/material";
+import {
+  Button,
+  Divider,
+  IconButton,
+  Paper,
+  Stack,
+  TextField,
+} from "@mui/material";
 import { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
@@ -8,7 +15,11 @@ import Loader from "../components/Loader";
 import Typography from "../components/Typography";
 import useAlert from "../hooks/useAlert";
 import CoreLayout from "../layouts/CoreLayout";
-import { auth, logInWithEmailAndPassword } from "../services/firebase";
+import {
+  auth,
+  logInWithEmailAndPassword,
+  signInWithGoogle,
+} from "../services/firebase";
 import { TLoginFormInputs } from "../utils/types";
 import { loginFormSchema } from "../utils/validation";
 
@@ -43,6 +54,14 @@ const Login = () => {
   }) => {
     try {
       await logInWithEmailAndPassword(email, password);
+    } catch (e: any) {
+      setAlert(e.message, "error");
+    }
+  };
+
+  const handleSignInWithGoogle = async () => {
+    try {
+      await signInWithGoogle();
     } catch (e: any) {
       setAlert(e.message, "error");
     }
@@ -126,14 +145,28 @@ const Login = () => {
                 </Button>
                 <Divider>or</Divider>
                 <Button
-                  sx={{ margin: "1rem 0 1rem 0" }}
+                  sx={{
+                    marginTop: "1rem",
+                  }}
                   variant="outlined"
-                  onClick={() => navigate("/register")}
+                  color="secondary"
+                  aria-label="Sign in with Google"
+                  onClick={handleSignInWithGoogle}
+                  startIcon={
+                    <img
+                      src="https://img.icons8.com/color/48/000000/google-logo.png"
+                      alt="Google Logo"
+                      style={{ width: "1.5rem", height: "1.5rem" }}
+                    />
+                  }
                 >
-                  Sign Up
+                  Sign in with Google
                 </Button>
               </Stack>
             </form>
+            <Link style={{ marginLeft: "auto" }} to="/register">
+              Sign Up
+            </Link>
           </Paper>
         )}
       </Stack>
