@@ -1,24 +1,28 @@
+import { useEffect } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
 import { Route, Routes, useNavigate } from "react-router-dom";
+import AlertPopup from "./components/AlertPopup";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import CoverLetterPage from "./pages/CoverLetterPage";
 import DashboardPage from "./pages/DashboardPage";
+import ErrorPage from "./pages/ErrorPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
-import { EPaths } from "./utils/types";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "./services/firebase";
-import { useEffect } from "react";
-import AlertPopup from "./components/AlertPopup";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
-import ErrorPage from "./pages/ErrorPage";
+import { auth } from "./services/firebase";
+import { EPaths } from "./utils/types";
 
 function App() {
   const navigate = useNavigate();
-  const [user] = useAuthState(auth);
+  const [user, isLoadingAuth] = useAuthState(auth);
 
   useEffect(() => {
-    if (!user) navigate("/login");
-  }, [user]);
+    if (!isLoadingAuth && !user) {
+      navigate("/login");
+    } else {
+      navigate("/dashboard");
+    }
+  }, [user, isLoadingAuth, navigate]);
 
   return (
     <>

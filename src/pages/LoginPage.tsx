@@ -1,28 +1,17 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import {
-  Button,
-  Divider,
-  IconButton,
-  Paper,
-  Stack,
-  TextField,
-} from "@mui/material";
-import { useEffect } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
+import { Button, Divider, Paper, Stack, TextField } from "@mui/material";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
-import Loader from "../components/Loader";
+import { Link } from "react-router-dom";
+import logo from "../assets/logo.svg";
 import Typography from "../components/Typography";
 import useAlert from "../hooks/useAlert";
 import CoreLayout from "../layouts/CoreLayout";
 import {
-  auth,
   logInWithEmailAndPassword,
   signInWithGoogle,
 } from "../services/firebase";
 import { TLoginFormInputs } from "../utils/types";
 import { loginFormSchema } from "../utils/validation";
-import logo from "../assets/logo.svg";
 
 const defaultLoginFormValues = {
   email: "",
@@ -30,14 +19,6 @@ const defaultLoginFormValues = {
 };
 
 const Login = () => {
-  const navigate = useNavigate();
-
-  const [user, loading] = useAuthState(auth);
-
-  useEffect(() => {
-    if (user) navigate("/dashboard");
-  }, [user, loading]);
-
   const {
     handleSubmit,
     control,
@@ -75,111 +56,107 @@ const Login = () => {
         justifyContent={{ xs: "inherit", sm: "center" }}
         alignItems={{ xs: "inherit", sm: "center" }}
       >
-        {loading ? (
-          <Loader />
-        ) : (
-          <Paper
-            elevation={2}
-            sx={{
+        <Paper
+          elevation={2}
+          sx={{
+            display: "flex",
+            padding: 4,
+            width: { sm: "50%" },
+            height: { xs: "100%", sm: "70%" },
+            flexDirection: "column",
+            justifyContent: { xs: "center", sm: "space-between" },
+          }}
+        >
+          <img
+            style={{
+              height: "56px",
+              width: "auto",
+            }}
+            src={logo}
+            alt="JobCraftPro Logo"
+          />
+          <Typography textAlign="center" variant="h4">
+            Sign in
+          </Typography>
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            style={{
               display: "flex",
-              padding: 4,
-              width: { sm: "50%" },
-              height: { xs: "100%", sm: "70%" },
               flexDirection: "column",
-              justifyContent: { xs: "center", sm: "space-between" },
+              marginTop: "1rem",
             }}
           >
-            <img
-              style={{
-                height: "56px",
-                width: "auto",
-              }}
-              src={logo}
-              alt="JobCraftPro Logo"
-            />
-            <Typography textAlign="center" variant="h4">
-              Sign in
-            </Typography>
-            <form
-              onSubmit={handleSubmit(onSubmit)}
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                marginTop: "1rem",
-              }}
-            >
-              <Controller
-                name="email"
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    variant="outlined"
-                    size="small"
-                    color="secondary"
-                    placeholder="Email"
-                    error={!!errors.email}
-                    helperText={
-                      errors.email?.message ? errors.email.message : " "
-                    }
-                  />
-                )}
-              />
-              <Controller
-                name="password"
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    variant="outlined"
-                    size="small"
-                    color="secondary"
-                    type="password"
-                    placeholder="Password"
-                    error={!!errors.password}
-                    helperText={
-                      errors.password?.message ? errors.password.message : " "
-                    }
-                  />
-                )}
-              />
-              <span>
-                <Link to="/reset-password">Forgot password?</Link>
-              </span>
-              <Stack flex={1} justifyContent="flex-end">
-                <Button
-                  sx={{ margin: "2rem 0 1rem 0" }}
-                  variant="contained"
-                  type="submit"
-                >
-                  Sign In
-                </Button>
-                <Divider>or</Divider>
-                <Button
-                  sx={{
-                    marginTop: "1rem",
-                  }}
+            <Controller
+              name="email"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
                   variant="outlined"
+                  size="small"
                   color="secondary"
-                  aria-label="Sign in with Google"
-                  onClick={handleSignInWithGoogle}
-                  startIcon={
-                    <img
-                      src="https://img.icons8.com/color/48/000000/google-logo.png"
-                      alt="Google Logo"
-                      style={{ width: "1.5rem", height: "1.5rem" }}
-                    />
+                  placeholder="Email"
+                  error={!!errors.email}
+                  helperText={
+                    errors.email?.message ? errors.email.message : " "
                   }
-                >
-                  Sign in with Google
-                </Button>
-              </Stack>
-            </form>
-            <Link style={{ marginLeft: "auto" }} to="/register">
-              Sign Up
-            </Link>
-          </Paper>
-        )}
+                />
+              )}
+            />
+            <Controller
+              name="password"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  variant="outlined"
+                  size="small"
+                  color="secondary"
+                  type="password"
+                  placeholder="Password"
+                  error={!!errors.password}
+                  helperText={
+                    errors.password?.message ? errors.password.message : " "
+                  }
+                />
+              )}
+            />
+            <span>
+              <Link to="/reset-password">Forgot password?</Link>
+            </span>
+            <Stack flex={1} justifyContent="flex-end">
+              <Button
+                sx={{ margin: "2rem 0 1rem 0" }}
+                variant="contained"
+                type="submit"
+              >
+                Sign In
+              </Button>
+              <Divider>or</Divider>
+              <Button
+                sx={{
+                  marginTop: "1rem",
+                }}
+                variant="outlined"
+                color="secondary"
+                aria-label="Sign in with Google"
+                onClick={handleSignInWithGoogle}
+                startIcon={
+                  <img
+                    src="https://img.icons8.com/color/48/000000/google-logo.png"
+                    alt="Google Logo"
+                    style={{ width: "1.5rem", height: "1.5rem" }}
+                  />
+                }
+              >
+                Sign in with Google
+              </Button>
+            </Stack>
+          </form>
+          <Link style={{ marginLeft: "auto" }} to="/register">
+            Sign Up
+          </Link>
+        </Paper>
       </Stack>
     </CoreLayout>
   );
