@@ -10,6 +10,7 @@ import { TRegistrationFormInputs } from "../utils/types";
 import { registerFormSchema } from "../utils/validation";
 import { useAuthState } from "react-firebase-hooks/auth";
 import logo from "../assets/logo.svg";
+import useAlert from "../hooks/useAlert";
 
 const defaultRegisterFormValues = {
   email: "",
@@ -36,15 +37,16 @@ const RegisterPage = () => {
     resolver: yupResolver(registerFormSchema),
   });
 
+  const { setAlert } = useAlert();
+
   const onSubmit: SubmitHandler<TRegistrationFormInputs> = async ({
     email,
     password,
-    confirmPassword,
   }) => {
-    if (password === confirmPassword) {
+    try {
       await registerWithEmailAndPassword(email, password);
-    } else {
-      alert("Passwords do not match");
+    } catch (e: any) {
+      setAlert(e.message, "error");
     }
   };
 
