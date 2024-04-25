@@ -14,6 +14,10 @@ import { TCoverLetterFormInputs } from "../utils/types";
 import { coverLetterFormSchema } from "../utils/validation";
 import Loader from "../components/Loader";
 import FlowCard from "../components/FlowCard";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth, saveDocument } from "../services/firebase";
+import useAlert from "../hooks/useAlert";
+import { useNavigate } from "react-router-dom";
 
 const defaultFormValues: TCoverLetterFormInputs = {
   resume: {
@@ -33,10 +37,18 @@ const MAX_STEPS = 4;
 
 const CoverLetterPage = () => {
   const [activeStep, setActiveStep] = useState<number>(0);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const [triggerGenerateCoverLetter, { isLoading }] =
-    useGenerateCoverLetterMutation();
+  const [
+    triggerGenerateCoverLetter,
+    { isLoading: isLoadingGenerateCoverLetter },
+  ] = useGenerateCoverLetterMutation();
+
+  const [user] = useAuthState(auth);
+
+  const { setAlert } = useAlert();
+
+  const navigate = useNavigate();
 
   const {
     handleSubmit,
@@ -64,7 +76,28 @@ const CoverLetterPage = () => {
       paragraphs: data.parameters.paragraphs?.toString(),
     };
 
-    // triggerGenerateCoverLetter(form);
+    try {
+      // set loading state
+      const response = await triggerGenerateCoverLetter(form).unwrap();
+      const coverLetterText = response.result;
+
+      // save the document, then navigate to the cover letter page
+      if (user?.uid && coverLetterText) {
+        setIsLoading(true);
+        const doc = await saveDocument(user?.uid, {
+          text: coverLetterText,
+          jobListingText: form.jobListingText,
+          length: form.length,
+          paragraphs: form.paragraphs,
+        });
+        navigate(`/cover-letter/${doc.id}`);
+      }
+    } catch (e: any) {
+      console.log(e);
+      setAlert(e.message, "error");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const incrementStep = async () => {
@@ -79,7 +112,6 @@ const CoverLetterPage = () => {
     "Upload Resume",
     "Add Job Description",
     "Configure Parameters",
-    "Download Cover Letter",
   ];
 
   const validateStep = async (activeStep: number) => {
@@ -206,20 +238,6 @@ const CoverLetterPage = () => {
             </Stack>
           </Stack>
         );
-      case 3:
-        return (
-          <>
-            {loading ? (
-              <Stack flex={1} justifyContent="center" alignItems="center">
-                <Loader text="Generating Cover Letter... this may take a moment." />
-              </Stack>
-            ) : (
-              <Button variant="contained" onClick={handleSubmit(onSubmit)}>
-                Download Cover Letter
-              </Button>
-            )}
-          </>
-        );
       default:
         return (
           <>
@@ -227,7 +245,7 @@ const CoverLetterPage = () => {
           </>
         );
     }
-  }, [activeStep, control, handleSubmit, loading, resumePDF, setValue]);
+  }, [activeStep, control, handleSubmit, isLoading, resumePDF, setValue]);
 
   const renderFooter = useCallback(() => {
     const isLastStep = activeStep === MAX_STEPS - 1;
@@ -248,7 +266,7 @@ const CoverLetterPage = () => {
             Reset
           </Button>
         ) : activeStep === 2 ? (
-          <Button variant="contained" onClick={incrementStep}>
+          <Button variant="contained" onClick={handleSubmit(onSubmit)}>
             Generate
           </Button>
         ) : (
@@ -275,13 +293,19 @@ const CoverLetterPage = () => {
             height: { xs: "100%", sm: "75%" },
           }}
         >
-          <FlowCard
-            headerTitle="Generate Cover Letter"
-            steps={steps}
-            body={renderBody()}
-            footer={renderFooter()}
-            activeStep={activeStep}
-          />
+          {isLoadingGenerateCoverLetter || isLoading ? (
+            <Stack flex={1} justifyContent="center" alignItems="center">
+              <Loader text="Loading..." />
+            </Stack>
+          ) : (
+            <FlowCard
+              headerTitle="Generate Cover Letter"
+              steps={steps}
+              body={renderBody()}
+              footer={renderFooter()}
+              activeStep={activeStep}
+            />
+          )}
         </Paper>
       </Stack>
     </CoreLayout>

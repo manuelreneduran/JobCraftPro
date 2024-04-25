@@ -9,7 +9,9 @@ export enum EPaths {
   LOGIN = "/login",
   REGISTER = "/register",
   COVER_LETTER = "/cover-letter",
+  COVER_LETTER_DETAIL = "/cover-letter/:id",
   RESET_PASSWORD = "/reset-password",
+  LOGOUT = "/logout",
 }
 
 export enum EMenuItemSettings {
@@ -68,4 +70,17 @@ export type TCoverLetterFormInputs = {
     length?: number;
     paragraphs?: number;
   };
+};
+
+/* Detail Types */
+
+export type TCoverLetterDetail = {
+  text?: string;
+  jobListingText: string;
+  length?: string;
+  paragraphs?: string;
+  userUid: string;
+  id: string;
+  createdAt: string;
+  updatedAt: string;
 };

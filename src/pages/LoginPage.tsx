@@ -1,12 +1,16 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button, Divider, Paper, Stack, TextField } from "@mui/material";
+import { useEffect } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.svg";
+import Loader from "../components/Loader";
 import Typography from "../components/Typography";
 import useAlert from "../hooks/useAlert";
-import CoreLayout from "../layouts/CoreLayout";
+import PublicLayout from "../layouts/PublicLayout";
 import {
+  auth,
   logInWithEmailAndPassword,
   signInWithGoogle,
 } from "../services/firebase";
@@ -19,6 +23,15 @@ const defaultLoginFormValues = {
 };
 
 const Login = () => {
+  const navigate = useNavigate();
+
+  const [user, isLoadingAuth] = useAuthState(auth);
+
+  // if the user is logged in, redirect to the dashboard
+  useEffect(() => {
+    if (!isLoadingAuth && user) navigate("/dashboard");
+  }, [user, isLoadingAuth]);
+
   const {
     handleSubmit,
     control,
@@ -50,18 +63,16 @@ const Login = () => {
   };
 
   return (
-    <CoreLayout useHeader={false}>
-      <Stack
-        height="100%"
-        justifyContent={{ xs: "inherit", sm: "center" }}
-        alignItems={{ xs: "inherit", sm: "center" }}
-      >
+    <PublicLayout>
+      {isLoadingAuth ? (
+        <Loader />
+      ) : (
         <Paper
           elevation={2}
           sx={{
             display: "flex",
             padding: 4,
-            width: { sm: "50%" },
+            width: { xs: "90%", sm: "50%", md: "40%" },
             height: { xs: "100%", sm: "70%" },
             flexDirection: "column",
             justifyContent: { xs: "center", sm: "space-between" },
@@ -153,12 +164,15 @@ const Login = () => {
               </Button>
             </Stack>
           </form>
-          <Link style={{ marginLeft: "auto" }} to="/register">
+          <Link
+            style={{ marginLeft: "auto", marginTop: "1rem" }}
+            to="/register"
+          >
             Sign Up
           </Link>
         </Paper>
-      </Stack>
-    </CoreLayout>
+      )}
+    </PublicLayout>
   );
 };
 

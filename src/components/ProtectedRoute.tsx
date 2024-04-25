@@ -1,4 +1,6 @@
-import { Navigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { useNavigate } from "react-router-dom";
 import { auth } from "../services/firebase";
 
 type ProtectedRouteProps = {
@@ -6,10 +8,14 @@ type ProtectedRouteProps = {
 };
 
 export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-  const user = auth.currentUser;
-  if (!user) {
-    // user is not authenticated
-    return <Navigate to="/login" />;
-  }
+  const navigate = useNavigate();
+  const [user, isLoadingAuth] = useAuthState(auth);
+
+  useEffect(() => {
+    if (!isLoadingAuth && !user) {
+      navigate("/login");
+    }
+  }, [user, isLoadingAuth, navigate]);
+
   return children;
 };

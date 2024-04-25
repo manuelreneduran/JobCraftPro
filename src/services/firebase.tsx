@@ -17,7 +17,12 @@ import {
   collection,
   where,
   addDoc,
+  deleteDoc,
+  doc,
+  getDoc,
 } from "firebase/firestore";
+import { TCoverLetterDetail } from "../utils/types";
+import { formatReadableDate } from "../utils/date";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -49,6 +54,8 @@ const analytics = getAnalytics(app);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const googleProvider = new GoogleAuthProvider();
+
+/* AUTH */
 
 const signInWithGoogle = async () => {
   try {
@@ -105,6 +112,54 @@ const logout = () => {
   signOut(auth);
 };
 
+/* DOCUMENTS */
+
+const saveDocument = async (userUid: string, data: any) => {
+  try {
+    return await addDoc(collection(db, "documents"), {
+      userUid,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      ...data,
+    });
+  } catch (err: any) {
+    throw err;
+  }
+};
+
+const deleteDocument = async (docId: string) => {
+  try {
+    await deleteDoc(doc(db, "documents", docId));
+  } catch (err: any) {
+    throw err;
+  }
+};
+
+const getDocument = async (docId: string) => {
+  try {
+    const document = await getDoc(doc(db, "documents", docId));
+    return {
+      ...document.data(),
+      id: document.id,
+      createdAt: formatReadableDate(document?.data?.()?.createdAt),
+      updatedAt: formatReadableDate(document?.data?.()?.updatedAt),
+    };
+  } catch (e: any) {
+    throw e;
+  }
+};
+
+const getManyDocumentByUser = async (userUid: string) => {
+  const q = query(collection(db, "documents"), where("userUid", "==", userUid));
+  const docs = await getDocs(q);
+  return docs.docs.map((doc) => ({
+    ...doc.data(),
+    id: doc.id,
+    createdAt: formatReadableDate(doc.data().createdAt),
+    updatedAt: formatReadableDate(doc.data().updatedAt),
+  })) as TCoverLetterDetail[];
+};
+
 export {
   auth,
   logout,
@@ -112,4 +167,8 @@ export {
   registerWithEmailAndPassword,
   sendPasswordReset,
   signInWithGoogle,
+  saveDocument,
+  deleteDocument,
+  getDocument,
+  getManyDocumentByUser,
 };
