@@ -18,6 +18,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, saveDocument } from "../services/firebase";
 import useAlert from "../hooks/useAlert";
 import { useNavigate } from "react-router-dom";
+import useAppBarHeight from "../hooks/useAppBarHeight";
 
 const defaultFormValues: TCoverLetterFormInputs = {
   resume: {
@@ -47,6 +48,8 @@ const CoverLetterPage = () => {
   const [user] = useAuthState(auth);
 
   const { setAlert } = useAlert();
+
+  const height = useAppBarHeight();
 
   const navigate = useNavigate();
 
@@ -279,19 +282,18 @@ const CoverLetterPage = () => {
   }, [activeStep, decrementStep, enableNext, incrementStep, reset]);
 
   return (
-    <CoreLayout>
+    <CoreLayout pageHeader="Cover Letter Generator">
       <Stack
-        height="100%"
+        height={`calc(100vh - ${height}px - 24px)`}
         justifyContent={{ xs: "inherit", sm: "center" }}
         alignItems={{ xs: "inherit", sm: "center" }}
-        sx={{ backgroundColor: colors.background.secondary }}
       >
         <Paper
           elevation={1}
           sx={{
             display: "flex",
-            width: { xs: "100%", sm: "75%" },
-            height: { xs: "100%", sm: "75%" },
+            width: { xs: "100%", md: "75%" },
+            height: { xs: "90%", sm: "75%" },
           }}
         >
           {isLoadingGenerateCoverLetter || isLoading ? (
