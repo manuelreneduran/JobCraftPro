@@ -277,6 +277,7 @@ const CoverLetterPage = () => {
       </>
     );
   }, [activeStep, decrementStep, enableNext, incrementStep, reset]);
+
   return (
     <CoreLayout>
       <Stack

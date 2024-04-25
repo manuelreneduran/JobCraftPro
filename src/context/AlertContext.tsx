@@ -4,24 +4,28 @@ const ALERT_TIME = 5000;
 const initialState = {
   text: "",
   type: "",
+  useRawMessage: false,
 };
 
 const AlertContext = createContext({
   ...initialState,
-  setAlert: (text: string, type: string) => {},
+  setAlert: (text: string, type: string, useRawMessage?: boolean) => {},
 });
 
 export const AlertProvider = ({ children }: { children: React.ReactNode }) => {
   const [text, setText] = useState("");
   const [type, setType] = useState("");
+  const [useRawMessage, setUseRawMessage] = useState(false);
 
-  const setAlert = (text: string, type: string) => {
+  const setAlert = (text: string, type: string, useRawMessage?: boolean) => {
     setText(text);
     setType(type);
+    setUseRawMessage(!!useRawMessage);
 
     setTimeout(() => {
       setText("");
       setType("");
+      setUseRawMessage(false);
     }, ALERT_TIME);
   };
 
@@ -30,6 +34,7 @@ export const AlertProvider = ({ children }: { children: React.ReactNode }) => {
       value={{
         text,
         type,
+        useRawMessage,
         setAlert,
       }}
     >

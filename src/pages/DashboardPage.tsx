@@ -1,25 +1,12 @@
-import { Delete } from "@mui/icons-material";
-import {
-  Avatar,
-  Card,
-  CardActions,
-  CardContent,
-  CardHeader,
-  Container,
-  IconButton,
-  Stack,
-} from "@mui/material";
-import { red } from "@mui/material/colors";
+import { Stack } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
+import { Link } from "react-router-dom";
+import CoverLetterCard from "../components/CoverLetterCard";
 import Typography from "../components/Typography";
 import useAlert from "../hooks/useAlert";
 import CoreLayout from "../layouts/CoreLayout";
-import {
-  auth,
-  deleteDocument,
-  getManyDocumentByUser,
-} from "../services/firebase";
+import { auth, getManyDocumentByUser } from "../services/firebase";
 import { TCoverLetterDetail } from "../utils/types";
 
 const DashboardPage = () => {
@@ -34,8 +21,8 @@ const DashboardPage = () => {
 
     try {
       setIsLoading(true);
-      // const response = await getManyDocumentByUser(user.uid);
-      // setCoverLetters(response);
+      const response = await getManyDocumentByUser(user.uid);
+      setCoverLetters(response);
     } catch (e: any) {
       setAlert(e.message, "error");
     } finally {
@@ -44,56 +31,28 @@ const DashboardPage = () => {
   }, [user, setAlert, setCoverLetters, setIsLoading]);
 
   useEffect(() => {
-    if (!coverLetters.length && user) {
+    if (user) {
       fetchCoverLetters();
     }
-  }, [coverLetters, setIsLoading, fetchCoverLetters, user]);
+  }, [fetchCoverLetters, user]);
 
-  const deleteDocument = async (docId: string) => {
-    try {
-      await deleteDocument(docId);
-
-      setAlert("Document deleted successfully", "success");
-    } catch (e: any) {
-      setAlert(e.message, "error");
-    }
-  };
-
-  console.log("rerender");
-  // fix bug with infinite loop on delete
   return (
     <CoreLayout pageHeader="Dashboard">
       <Stack className="dashboard-row">
-        <Typography variant="h6">Cover Letters</Typography>
+        <Typography variant="h5">Hi, {user?.displayName} &#x1F64C;</Typography>
+      </Stack>
+      <Stack className="dashboard-row" mt={4}>
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
+        >
+          <Typography variant="h6">Previous Cover Letters</Typography>
+          <Link to="cover-letters">See all</Link>
+        </Stack>
         <Stack flexWrap="wrap" direction="row">
           {coverLetters.map((coverLetter) => (
-            <Card
-              key={coverLetter.id}
-              sx={{ margin: "1rem 1rem 1rem 0", width: 200, height: 180 }}
-            >
-              <CardHeader
-                avatar={
-                  <Avatar sx={{ bgcolor: red[500] }} aria-label="pdf">
-                    PDF
-                  </Avatar>
-                }
-                title={coverLetter.jobListingText.slice(0, 20) + "..."}
-                subheader={coverLetter.createdAt}
-              />
-              <CardContent>
-                <Typography variant="body2" color="text.secondary">
-                  {coverLetter?.text?.slice(0, 80) + "..."}
-                </Typography>
-              </CardContent>
-              <CardActions disableSpacing>
-                <IconButton
-                  aria-label="delete"
-                  onClick={() => deleteDocument(coverLetter.id)}
-                >
-                  <Delete />
-                </IconButton>
-              </CardActions>
-            </Card>
+            <CoverLetterCard coverLetter={coverLetter} key={coverLetter.id} />
           ))}
         </Stack>
       </Stack>

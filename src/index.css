@@ -4,6 +4,11 @@ body,
   height: 100vh;
 }
 
+a {
+  text-decoration: none;
+  color: #ff5a00;
+}
+
 .jcp-spinner {
   height: 60px;
   text-align: center;

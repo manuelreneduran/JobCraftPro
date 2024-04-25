@@ -1,4 +1,7 @@
-export const parseError = (error: String) => {
+export const serializeError = (error: String, useRawMessage: boolean) => {
+  if (useRawMessage) {
+    return error;
+  }
   if (error.includes("auth/invalid-email")) {
     return "Invalid email address.";
   } else if (error.includes("auth/user-not-found")) {

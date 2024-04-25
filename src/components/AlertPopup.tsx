@@ -1,12 +1,12 @@
 import { Alert } from "@mui/material";
 import useAlert from "../hooks/useAlert";
-import { parseError } from "../utils/errors";
+import { serializeError } from "../utils/errors";
 
 const AlertPopup = () => {
-  const { text, type } = useAlert();
+  const { text, type, useRawMessage } = useAlert();
 
   if (text && type) {
-    const errorText = parseError(text);
+    const errorText = serializeError(text, useRawMessage);
     return (
       <Alert
         severity={type as "error" | "info" | "success" | "warning"}
