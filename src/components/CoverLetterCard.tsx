@@ -1,12 +1,15 @@
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import {
   Avatar,
+  Button,
   Card,
+  CardActions,
   CardContent,
   CardHeader,
   IconButton,
   Menu,
   MenuItem,
+  Stack,
 } from "@mui/material";
 import { red } from "@mui/material/colors";
 import Typography from "../components/Typography";
@@ -14,6 +17,7 @@ import { TCoverLetterDetail } from "../utils/types";
 import { useState } from "react";
 import { deleteDocument } from "../services/firebase";
 import useAlert from "../hooks/useAlert";
+import { useNavigate } from "react-router-dom";
 
 const options = ["Delete"];
 
@@ -26,6 +30,8 @@ const CoverLetterCard = ({
 }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+
+  const navigate = useNavigate();
 
   const { setAlert } = useAlert();
 
@@ -47,15 +53,13 @@ const CoverLetterCard = ({
   return (
     <Card
       key={coverLetter.id}
-      sx={{ margin: "1rem 1rem 1rem 0", width: 200, height: 180 }}
+      sx={{
+        margin: "1rem 1rem 1rem 0",
+        width: { xs: 175 },
+        height: { xs: 240 },
+      }}
     >
       <CardHeader
-        avatar={
-          <Avatar sx={{ bgcolor: red[500] }} aria-label="pdf">
-            PDF
-          </Avatar>
-        }
-        title={coverLetter.jobListingText.slice(0, 20) + "..."}
         subheader={coverLetter.createdAt}
         action={
           <>
@@ -98,6 +102,22 @@ const CoverLetterCard = ({
           {coverLetter?.text?.slice(0, 80) + "..."}
         </Typography>
       </CardContent>
+      <CardActions>
+        <Stack
+          width="100%"
+          direction="row"
+          justifyContent="flex-end"
+          alignItems="center"
+        >
+          <Button
+            onClick={() => navigate(`/cover-letter/${coverLetter.id}`)}
+            variant="text"
+            size="small"
+          >
+            View
+          </Button>
+        </Stack>
+      </CardActions>
     </Card>
   );
 };

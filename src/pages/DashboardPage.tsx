@@ -8,33 +8,33 @@ import useAlert from "../hooks/useAlert";
 import CoreLayout from "../layouts/CoreLayout";
 import { auth, getManyDocumentByUser } from "../services/firebase";
 import { TCoverLetterDetail } from "../utils/types";
+import { formatReadableDate } from "../utils/date";
 
 const DashboardPage = () => {
-  const [coverLetters, setCoverLetters] = useState<TCoverLetterDetail[]>([]);
+  const [coverLetters, setCoverLetters] = useState<TCoverLetterDetail[] | null>(
+    null
+  );
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const [user] = useAuthState(auth);
+  const [user, authStateLoading] = useAuthState(auth);
   const { setAlert } = useAlert();
 
-  const fetchCoverLetters = useCallback(async () => {
-    if (!user) return;
-
+  const fetchCoverLetters = async (userUid: string) => {
+    let response: TCoverLetterDetail[] = [];
     try {
-      setIsLoading(true);
-      const response = await getManyDocumentByUser(user.uid);
-      setCoverLetters(response);
+      response = await getManyDocumentByUser(userUid);
     } catch (e: any) {
       setAlert(e.message, "error");
     } finally {
-      setIsLoading(false);
+      setCoverLetters(response);
     }
-  }, [user, setAlert, setCoverLetters, setIsLoading]);
+  };
 
   useEffect(() => {
-    if (user) {
-      fetchCoverLetters();
+    if (user && !coverLetters) {
+      fetchCoverLetters(user.uid);
     }
-  }, [fetchCoverLetters, user]);
+  }, [fetchCoverLetters, user, coverLetters]);
 
   return (
     <CoreLayout pageHeader="Dashboard">
@@ -51,7 +51,7 @@ const DashboardPage = () => {
           <Link to="cover-letters">See all</Link>
         </Stack>
         <Stack flexWrap="wrap" direction="row">
-          {coverLetters.map((coverLetter) => (
+          {coverLetters?.map((coverLetter) => (
             <CoverLetterCard coverLetter={coverLetter} key={coverLetter.id} />
           ))}
         </Stack>

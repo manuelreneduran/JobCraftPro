@@ -23,6 +23,7 @@ import {
 } from "firebase/firestore";
 import { TCoverLetterDetail } from "../utils/types";
 import { formatReadableDate } from "../utils/date";
+import { format } from "date-fns";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -141,9 +142,9 @@ const getDocument = async (docId: string) => {
     return {
       ...document.data(),
       id: document.id,
-      createdAt: formatReadableDate(document?.data?.()?.createdAt),
-      updatedAt: formatReadableDate(document?.data?.()?.updatedAt),
-    };
+      createdAt: formatReadableDate(document?.data?.()?.createdAt?.toDate()),
+      updatedAt: formatReadableDate(document?.data?.()?.updatedAt?.toDate()),
+    } as TCoverLetterDetail;
   } catch (e: any) {
     throw e;
   }
@@ -155,8 +156,8 @@ const getManyDocumentByUser = async (userUid: string) => {
   return docs.docs.map((doc) => ({
     ...doc.data(),
     id: doc.id,
-    createdAt: formatReadableDate(doc.data().createdAt),
-    updatedAt: formatReadableDate(doc.data().updatedAt),
+    createdAt: formatReadableDate(doc.data().createdAt?.toDate()),
+    updatedAt: formatReadableDate(doc.data().updatedAt?.toDate()),
   })) as TCoverLetterDetail[];
 };
 
