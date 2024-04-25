@@ -18,20 +18,22 @@ import Typography from "@mui/material/Typography";
 import logo from "../assets/logo.svg";
 import { EMenuItemSettings, EPages, EPaths } from "../utils/types";
 import { useNavigate } from "react-router-dom";
-import { logout } from "../services/firebase";
-
-const drawerWidth = 240;
+import HomeIcon from "@mui/icons-material/Home";
+import ArticleIcon from "@mui/icons-material/Article";
+import LogoutIcon from "@mui/icons-material/Logout";
+import { colors } from "../styles/colors";
+const drawerWidth = 200;
 
 const pages: { name: EPages; route: EPaths; icon: React.ReactNode }[] = [
   {
     name: EPages.DASHBOARD,
     route: EPaths.DASHBOARD,
-    icon: <InboxIcon />,
+    icon: <HomeIcon />,
   },
   {
     name: EPages.COVER_LETTER,
     route: EPaths.COVER_LETTER,
-    icon: <MailIcon />,
+    icon: <ArticleIcon />,
   },
 ];
 
@@ -42,7 +44,7 @@ const settings: {
 }[] = [
   {
     name: EMenuItemSettings.LOGOUT,
-    icon: <MailIcon />,
+    icon: <LogoutIcon />,
     route: EPaths.LOGOUT,
   },
 ];
@@ -74,8 +76,8 @@ export default function NavMenu({ children, pageHeader }: NavMenuProps) {
 
   const drawer = (
     <div>
-      <Toolbar>
-        <Box sx={{ display: { xs: "none", sm: "flex" } }}>
+      <Toolbar disableGutters>
+        <Box paddingLeft="8px" sx={{ display: { xs: "none", sm: "flex" } }}>
           <img
             style={{
               maxHeight: "36px",
@@ -96,7 +98,11 @@ export default function NavMenu({ children, pageHeader }: NavMenuProps) {
             }}
           >
             <ListItemButton>
-              <ListItemIcon>{icon}</ListItemIcon>
+              <ListItemIcon
+                sx={{ color: colors.button.primary.main, minWidth: "32px" }}
+              >
+                {icon}
+              </ListItemIcon>
               <ListItemText primary={name} />
             </ListItemButton>
           </ListItem>
@@ -113,7 +119,11 @@ export default function NavMenu({ children, pageHeader }: NavMenuProps) {
             }}
           >
             <ListItemButton>
-              <ListItemIcon>{icon}</ListItemIcon>
+              <ListItemIcon
+                sx={{ color: colors.button.primary.main, minWidth: "32px" }}
+              >
+                {icon}
+              </ListItemIcon>
               <ListItemText primary={name} />
             </ListItemButton>
           </ListItem>
@@ -123,10 +133,11 @@ export default function NavMenu({ children, pageHeader }: NavMenuProps) {
   );
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ display: "flex", height: "100%" }}>
       <CssBaseline />
       <AppBar
         position="fixed"
+        elevation={0}
         sx={{
           width: { sm: `calc(100% - ${drawerWidth}px)` },
           ml: { sm: `${drawerWidth}px` },
@@ -191,6 +202,7 @@ export default function NavMenu({ children, pageHeader }: NavMenuProps) {
           flexGrow: 1,
           p: 3,
           width: { sm: `calc(100% - ${drawerWidth}px)` },
+          height: "100%",
         }}
       >
         <Toolbar />
