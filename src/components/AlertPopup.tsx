@@ -15,7 +15,7 @@ const AlertPopup = () => {
           top: "1rem",
           left: "50%",
           transform: "translateX(-50%)",
-          zIndex: 10,
+          zIndex: 10000,
         }}
       >
         {errorText}

@@ -1,13 +1,15 @@
 /* NAVIGATION TYPES */
 export enum EPages {
   DASHBOARD = "Dashboard",
-  COVER_LETTER = "Cover Letter",
+  COVER_LETTER = "Cover Letters",
+  GENERATE_COVER_LETTER = "Generate Cover Letter",
 }
 
 export enum EPaths {
   DASHBOARD = "/dashboard",
   LOGIN = "/login",
   REGISTER = "/register",
+  GENERATE_COVER_LETTER = "/generate/cover-letter",
   COVER_LETTER = "/cover-letter",
   COVER_LETTER_DETAIL = "/cover-letter/:id",
   RESET_PASSWORD = "/reset-password",

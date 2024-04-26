@@ -1,6 +1,5 @@
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import {
-  Avatar,
   Button,
   Card,
   CardActions,
@@ -11,13 +10,10 @@ import {
   MenuItem,
   Stack,
 } from "@mui/material";
-import { red } from "@mui/material/colors";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Typography from "../components/Typography";
 import { TCoverLetterDetail } from "../utils/types";
-import { useState } from "react";
-import { deleteDocument } from "../services/firebase/documents";
-import useAlert from "../hooks/useAlert";
-import { useNavigate } from "react-router-dom";
 
 const options = ["Delete"];
 
@@ -25,38 +21,34 @@ const ITEM_HEIGHT = 48;
 
 const CoverLetterCard = ({
   coverLetter,
+  handleMenuItemClick,
 }: {
   coverLetter: TCoverLetterDetail;
+  handleMenuItemClick: (option: string, id: string) => Promise<void>;
 }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
   const navigate = useNavigate();
 
-  const { setAlert } = useAlert();
-
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
-  const handleClose = async (option: string) => {
-    if (option === "Delete") {
-      try {
-        await deleteDocument(coverLetter.id);
-        setAlert("Document deleted successfully", "success");
-      } catch (e: any) {
-        setAlert(e.message, "error", true);
-      }
-    }
+  const handleClose = async () => {
     setAnchorEl(null);
   };
 
+  const handleOptionClick = async (option: string, id: string) => {
+    await handleMenuItemClick(option, id);
+    handleClose();
+  };
   return (
     <Card
       key={coverLetter.id}
       sx={{
         margin: "1rem 1rem 1rem 0",
         width: { xs: 175 },
-        height: { xs: 240 },
+        height: { xs: 220 },
       }}
     >
       <CardHeader
@@ -89,7 +81,10 @@ const CoverLetterCard = ({
               }}
             >
               {options.map((option) => (
-                <MenuItem key={option} onClick={() => handleClose(option)}>
+                <MenuItem
+                  key={option}
+                  onClick={() => handleOptionClick(option, coverLetter.id)}
+                >
                   {option}
                 </MenuItem>
               ))}
@@ -99,7 +94,7 @@ const CoverLetterCard = ({
       />
       <CardContent>
         <Typography variant="body2" color="text.secondary">
-          {coverLetter?.text?.slice(0, 80) + "..."}
+          {coverLetter?.text?.slice(0, 50) + "..."}
         </Typography>
       </CardContent>
       <CardActions>

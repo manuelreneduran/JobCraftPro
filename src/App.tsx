@@ -2,7 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import AlertPopup from "./components/AlertPopup";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import CoverLetterDetailPage from "./pages/CoverLetterDetailPage";
-import CoverLetterPage from "./pages/CoverLetterPage";
+import GenerateCoverLetterPage from "./pages/GenerateCoverLetterPage";
 import DashboardPage from "./pages/DashboardPage";
 import ErrorPage from "./pages/ErrorPage";
 import LoginPage from "./pages/LoginPage";
@@ -10,6 +10,7 @@ import RegisterPage from "./pages/RegisterPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import { EPaths } from "./utils/types";
 import Logout from "./pages/Logout";
+import CoverLetterPage from "./pages/CoverLetterPage";
 
 function App() {
   return (
@@ -28,17 +29,17 @@ function App() {
             </ProtectedRoute>
           }
         />
-
+        <Route path={EPaths.COVER_LETTER} element={<CoverLetterPage />} />
         <Route
           path={EPaths.COVER_LETTER_DETAIL}
           element={<CoverLetterDetailPage />}
         />
 
         <Route
-          path={EPaths.COVER_LETTER}
+          path={EPaths.GENERATE_COVER_LETTER}
           element={
             <ProtectedRoute>
-              <CoverLetterPage />
+              <GenerateCoverLetterPage />
             </ProtectedRoute>
           }
         />

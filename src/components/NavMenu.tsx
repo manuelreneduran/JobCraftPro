@@ -1,28 +1,37 @@
-import * as React from "react";
+import ArticleIcon from "@mui/icons-material/Article";
+import BuildIcon from "@mui/icons-material/Build";
+import HomeIcon from "@mui/icons-material/Home";
+import LogoutIcon from "@mui/icons-material/Logout";
+import MenuIcon from "@mui/icons-material/Menu";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
 import Divider from "@mui/material/Divider";
 import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import MailIcon from "@mui/icons-material/Mail";
-import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import logo from "../assets/logo.svg";
-import { EMenuItemSettings, EPages, EPaths } from "../utils/types";
+import * as React from "react";
 import { useNavigate } from "react-router-dom";
-import HomeIcon from "@mui/icons-material/Home";
-import ArticleIcon from "@mui/icons-material/Article";
-import LogoutIcon from "@mui/icons-material/Logout";
+import logo from "../assets/logo.svg";
 import { colors } from "../styles/colors";
+import { EMenuItemSettings, EPages, EPaths } from "../utils/types";
+import { ExpandLess, ExpandMore } from "@mui/icons-material";
+import { Collapse } from "@mui/material";
 const drawerWidth = 200;
+
+const documents: { name: EPages; route: EPaths; icon: React.ReactNode }[] = [
+  {
+    name: EPages.COVER_LETTER,
+    route: EPaths.COVER_LETTER,
+    icon: <ArticleIcon />,
+  },
+];
 
 const pages: { name: EPages; route: EPaths; icon: React.ReactNode }[] = [
   {
@@ -30,10 +39,13 @@ const pages: { name: EPages; route: EPaths; icon: React.ReactNode }[] = [
     route: EPaths.DASHBOARD,
     icon: <HomeIcon />,
   },
+];
+
+const generators: { name: EPages; route: EPaths; icon: React.ReactNode }[] = [
   {
-    name: EPages.COVER_LETTER,
-    route: EPaths.COVER_LETTER,
-    icon: <ArticleIcon />,
+    name: EPages.GENERATE_COVER_LETTER,
+    route: EPaths.GENERATE_COVER_LETTER,
+    icon: <BuildIcon />,
   },
 ];
 
@@ -56,6 +68,8 @@ type NavMenuProps = {
 export default function NavMenu({ children, pageHeader }: NavMenuProps) {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isClosing, setIsClosing] = React.useState(false);
+  const [openNestedDocuments, setOpenNestedDocuments] = React.useState(true);
+  const [openNestedGenerate, setOpenNestedGenerate] = React.useState(true);
 
   const navigate = useNavigate();
 
@@ -74,6 +88,13 @@ export default function NavMenu({ children, pageHeader }: NavMenuProps) {
     }
   };
 
+  const handleNestedDocumentsItemClick = () => {
+    setOpenNestedDocuments(!openNestedDocuments);
+  };
+
+  const handleNestedGenerateItemClick = () => {
+    setOpenNestedGenerate(!openNestedGenerate);
+  };
   const drawer = (
     <div>
       <Toolbar disableGutters>
@@ -107,6 +128,52 @@ export default function NavMenu({ children, pageHeader }: NavMenuProps) {
             </ListItemButton>
           </ListItem>
         ))}
+        <ListItemButton onClick={handleNestedGenerateItemClick}>
+          <ListItemIcon
+            sx={{ color: colors.button.primary.main, minWidth: "32px" }}
+          >
+            <BuildIcon />
+          </ListItemIcon>
+          <ListItemText primary={"Generate"} />
+          {openNestedGenerate ? <ExpandLess /> : <ExpandMore />}
+        </ListItemButton>
+        <Collapse in={openNestedGenerate} timeout="auto" unmountOnExit>
+          <List component="div" disablePadding>
+            {generators.map(({ name, route }) => (
+              <ListItemButton key={name} onClick={() => navigate(route)}>
+                <ListItemText
+                  primaryTypographyProps={{
+                    variant: "body2",
+                  }}
+                  primary={name}
+                />
+              </ListItemButton>
+            ))}
+          </List>
+        </Collapse>
+        <ListItemButton onClick={handleNestedDocumentsItemClick}>
+          <ListItemIcon
+            sx={{ color: colors.button.primary.main, minWidth: "32px" }}
+          >
+            <ArticleIcon />
+          </ListItemIcon>
+          <ListItemText primary={"Documents"} />
+          {openNestedDocuments ? <ExpandLess /> : <ExpandMore />}
+        </ListItemButton>
+        <Collapse in={openNestedDocuments} timeout="auto" unmountOnExit>
+          <List component="div" disablePadding>
+            {documents.map(({ name, route }) => (
+              <ListItemButton key={name} onClick={() => navigate(route)}>
+                <ListItemText
+                  primaryTypographyProps={{
+                    variant: "body2",
+                  }}
+                  primary={name}
+                />
+              </ListItemButton>
+            ))}
+          </List>
+        </Collapse>
       </List>
       <Divider />
       <List>
@@ -119,11 +186,6 @@ export default function NavMenu({ children, pageHeader }: NavMenuProps) {
             }}
           >
             <ListItemButton>
-              <ListItemIcon
-                sx={{ color: colors.button.primary.main, minWidth: "32px" }}
-              >
-                {icon}
-              </ListItemIcon>
               <ListItemText primary={name} />
             </ListItemButton>
           </ListItem>
