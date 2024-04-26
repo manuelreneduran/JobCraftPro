@@ -15,7 +15,7 @@ import { red } from "@mui/material/colors";
 import Typography from "../components/Typography";
 import { TCoverLetterDetail } from "../utils/types";
 import { useState } from "react";
-import { deleteDocument } from "../services/firebase";
+import { deleteDocument } from "../services/firebase/documents";
 import useAlert from "../hooks/useAlert";
 import { useNavigate } from "react-router-dom";
 

@@ -6,9 +6,10 @@ import CoverLetterCard from "../components/CoverLetterCard";
 import Typography from "../components/Typography";
 import useAlert from "../hooks/useAlert";
 import CoreLayout from "../layouts/CoreLayout";
-import { auth, getManyDocumentByUser } from "../services/firebase";
+import { auth } from "../services/firebase";
 import { TCoverLetterDetail } from "../utils/types";
 import { formatReadableDate } from "../utils/date";
+import { getManyDocumentByUser } from "../services/firebase/documents";
 
 const DashboardPage = () => {
   const [coverLetters, setCoverLetters] = useState<TCoverLetterDetail[] | null>(

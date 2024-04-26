@@ -14,7 +14,8 @@ import { EMenuItemSettings, EPages, EPaths } from "../utils/types";
 import logo from "../assets/logo.svg";
 import { useNavigate } from "react-router-dom";
 import Typography from "./Typography";
-import { auth, logout } from "../services/firebase";
+import { auth } from "../services/firebase";
+import { logout } from "../services/firebase/auth";
 
 const pages: EPages[] = [EPages.DASHBOARD, EPages.COVER_LETTER];
 const settings: EMenuItemSettings[] = [EMenuItemSettings.LOGOUT];

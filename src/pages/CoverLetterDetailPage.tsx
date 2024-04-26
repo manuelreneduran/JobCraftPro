@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import Typography from "../components/Typography";
 import useAlert from "../hooks/useAlert";
 import CoreLayout from "../layouts/CoreLayout";
-import { getDocument } from "../services/firebase";
+import { getDocument } from "../services/firebase/documents";
 import { colors } from "../styles/colors";
 import { TCoverLetterDetail } from "../utils/types";
 import useAppBarHeight from "../hooks/useAppBarHeight";

@@ -1,24 +1,23 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Button, Divider, Paper, Slider } from "@mui/material";
+import { Button, Paper, Slider } from "@mui/material";
 import Stack from "@mui/material/Stack";
 import { useCallback, useMemo, useState } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import FlowCard from "../components/FlowCard";
 import Input from "../components/Input";
-import Stepper from "../components/Stepper";
+import Loader from "../components/Loader";
 import Typography from "../components/Typography";
 import UploadButton from "../components/UploadButton";
+import useAlert from "../hooks/useAlert";
+import useAppBarHeight from "../hooks/useAppBarHeight";
 import CoreLayout from "../layouts/CoreLayout";
 import { useGenerateCoverLetterMutation } from "../services/api";
-import { colors } from "../styles/colors";
+import { auth } from "../services/firebase";
 import { TCoverLetterFormInputs } from "../utils/types";
 import { coverLetterFormSchema } from "../utils/validation";
-import Loader from "../components/Loader";
-import FlowCard from "../components/FlowCard";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { auth, saveDocument } from "../services/firebase";
-import useAlert from "../hooks/useAlert";
-import { useNavigate } from "react-router-dom";
-import useAppBarHeight from "../hooks/useAppBarHeight";
+import { saveDocument } from "../services/firebase/documents";
 
 const defaultFormValues: TCoverLetterFormInputs = {
   resume: {

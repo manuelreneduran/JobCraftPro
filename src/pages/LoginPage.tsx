@@ -9,13 +9,13 @@ import Loader from "../components/Loader";
 import Typography from "../components/Typography";
 import useAlert from "../hooks/useAlert";
 import PublicLayout from "../layouts/PublicLayout";
-import {
-  auth,
-  logInWithEmailAndPassword,
-  signInWithGoogle,
-} from "../services/firebase";
+import { auth } from "../services/firebase";
 import { TLoginFormInputs } from "../utils/types";
 import { loginFormSchema } from "../utils/validation";
+import {
+  logInWithEmailAndPassword,
+  signInWithGoogle,
+} from "../services/firebase/auth";
 
 const defaultLoginFormValues = {
   email: "",
