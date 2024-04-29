@@ -21,8 +21,7 @@ const CoverLetterDetailPage = () => {
       const response = await getDocument(docId);
       setDocument(response);
     } catch (e: any) {
-      console.log(e.message);
-      setAlert("error", e.message);
+      setAlert(e.message, "error");
     }
   };
 
@@ -35,9 +34,9 @@ const CoverLetterDetailPage = () => {
   const handleCopy = () => {
     if (document?.text) {
       navigator.clipboard.writeText(document.text);
-      setAlert("Copied to clipboard", "success");
+      setAlert("Copied to clipboard", "success", true);
     } else {
-      setAlert("No text to copy", "error");
+      setAlert("No text to copy", "error", true);
     }
   };
 

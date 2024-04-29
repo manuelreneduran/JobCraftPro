@@ -20,6 +20,16 @@ export enum EMenuItemSettings {
   LOGOUT = "Logout",
 }
 
+export enum ERoles {
+  USER = "user",
+  ADMIN = "admin",
+}
+
+export enum ETiers {
+  FREE = "free",
+  PRO = "pro",
+}
+
 /* API Response Types */
 
 export type TQueryResponse<T> = {
@@ -38,10 +48,9 @@ export type TGenerateCoverLetterRequest = {
 /* Auth Types */
 
 export type TUser = {
+  uid: string;
+  authProvider: string;
   email: string;
-  exp: number;
-  name: string;
-  picture: string;
 };
 
 export type TLoginFormInputs = {

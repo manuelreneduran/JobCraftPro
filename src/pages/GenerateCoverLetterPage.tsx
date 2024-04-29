@@ -15,9 +15,9 @@ import useAppBarHeight from "../hooks/useAppBarHeight";
 import CoreLayout from "../layouts/CoreLayout";
 import { useGenerateCoverLetterMutation } from "../services/api";
 import { auth } from "../services/firebase";
+import { saveDocument } from "../services/firebase/documents";
 import { TCoverLetterFormInputs } from "../utils/types";
 import { coverLetterFormSchema } from "../utils/validation";
-import { saveDocument } from "../services/firebase/documents";
 
 const defaultFormValues: TCoverLetterFormInputs = {
   resume: {
@@ -83,7 +83,8 @@ const GenerateCoverLetterPage = () => {
       const response = await triggerGenerateCoverLetter(form).unwrap();
       const coverLetterText = response.result;
 
-      // save the document, then navigate to the cover letter page
+      // save the document, subtract a generate if user is free tier,
+      // then navigate to the cover letter page
       if (user?.uid && coverLetterText) {
         setIsLoading(true);
         const doc = await saveDocument(user?.uid, {
@@ -92,11 +93,11 @@ const GenerateCoverLetterPage = () => {
           length: form.length,
           paragraphs: form.paragraphs,
         });
+
         navigate(`/cover-letter/${doc.id}`);
       }
     } catch (e: any) {
-      console.log(e);
-      setAlert(e.message, "error");
+      setAlert(e.message, "error", true);
     } finally {
       setIsLoading(false);
     }
@@ -303,9 +304,9 @@ const GenerateCoverLetterPage = () => {
             <FlowCard
               headerTitle="Generate Cover Letter"
               steps={steps}
+              activeStep={activeStep}
               body={renderBody()}
               footer={renderFooter()}
-              activeStep={activeStep}
             />
           )}
         </Paper>

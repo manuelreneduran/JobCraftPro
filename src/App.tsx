@@ -2,15 +2,15 @@ import { Route, Routes } from "react-router-dom";
 import AlertPopup from "./components/AlertPopup";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import CoverLetterDetailPage from "./pages/CoverLetterDetailPage";
-import GenerateCoverLetterPage from "./pages/GenerateCoverLetterPage";
+import CoverLetterPage from "./pages/CoverLetterPage";
 import DashboardPage from "./pages/DashboardPage";
 import ErrorPage from "./pages/ErrorPage";
+import GenerateCoverLetterPage from "./pages/GenerateCoverLetterPage";
 import LoginPage from "./pages/LoginPage";
+import Logout from "./pages/Logout";
 import RegisterPage from "./pages/RegisterPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import { EPaths } from "./utils/types";
-import Logout from "./pages/Logout";
-import CoverLetterPage from "./pages/CoverLetterPage";
 
 function App() {
   return (

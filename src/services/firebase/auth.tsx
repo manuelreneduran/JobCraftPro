@@ -1,4 +1,5 @@
 import {
+  User,
   createUserWithEmailAndPassword,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
@@ -8,6 +9,14 @@ import {
 import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { auth, db, googleProvider } from ".";
 
+const serializeUser = (user: User) => {
+  return {
+    uid: user.uid,
+    authProvider: user.providerId,
+    email: user.email,
+  };
+};
+
 const signInWithGoogle = async () => {
   try {
     const res = await signInWithPopup(auth, googleProvider);
@@ -15,11 +24,7 @@ const signInWithGoogle = async () => {
     const q = query(collection(db, "users"), where("uid", "==", user.uid));
     const docs = await getDocs(q);
     if (docs.docs.length === 0) {
-      await addDoc(collection(db, "users"), {
-        uid: user.uid,
-        authProvider: "google",
-        email: user.email,
-      });
+      await addDoc(collection(db, "users"), serializeUser(user));
     }
   } catch (err: any) {
     throw err;
@@ -41,11 +46,7 @@ const registerWithEmailAndPassword = async (
   try {
     const res = await createUserWithEmailAndPassword(auth, email, password);
     const user = res.user;
-    await addDoc(collection(db, "users"), {
-      uid: user.uid,
-      authProvider: "local",
-      email,
-    });
+    await addDoc(collection(db, "users"), serializeUser(user));
   } catch (err: any) {
     throw err;
   }

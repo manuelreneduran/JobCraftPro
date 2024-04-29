@@ -21,6 +21,7 @@ const DashboardPage = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const [user] = useAuthState(auth);
+
   const { setAlert } = useAlert();
 
   const fetchCoverLetters = async (userUid: string) => {
@@ -63,12 +64,14 @@ const DashboardPage = () => {
         key={coverLetter.id}
       />
     ));
-
   return (
     <CoreLayout pageHeader="Dashboard">
       <Stack className="dashboard-row">
-        <Typography variant="h5">Hi, {user?.displayName} &#x1F64C;</Typography>
+        <Typography variant="h5">
+          Hi, {user?.displayName || user?.email} &#x1F64C;
+        </Typography>
       </Stack>
+
       <Stack className="dashboard-row" mt={4}>
         <Stack
           direction="row"

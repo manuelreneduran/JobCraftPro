@@ -54,6 +54,7 @@ const getDocument = async (docId: string) => {
 const getManyDocumentByUser = async (q: Query) => {
   try {
     const docs = await getDocs(q);
+    if (docs.empty) return [];
     return docs.docs.map((doc) => ({
       ...doc.data(),
       id: doc.id,
