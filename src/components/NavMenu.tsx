@@ -279,12 +279,12 @@ export default function NavMenu({
         }}
       >
         <Toolbar />
-        {isLoading ? (
-          <Stack justifyContent="center" alignItems="center">
+        {isError ? (
+          <ErrorPage />
+        ) : isLoading ? (
+          <Stack height="100%" justifyContent="center" alignItems="center">
             <Loader />
           </Stack>
-        ) : isError ? (
-          <ErrorPage />
         ) : (
           children
         )}

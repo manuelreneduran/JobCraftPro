@@ -4,17 +4,12 @@ import {
   collection,
   deleteDoc,
   doc,
-  getDoc,
   orderBy,
   query,
   where,
 } from "firebase/firestore";
 import { db } from ".";
-import { formatReadableDate } from "../../utils/date";
-import {
-  TCoverLetterDetail,
-  TGetCoverLetterQueryResponse,
-} from "../../utils/types";
+import { TCoverLetterDetail } from "../../utils/types";
 import { coverLetterConverter } from "./converters";
 
 const saveCoverLetterDoc = async (data: TCoverLetterDetail) =>
@@ -22,18 +17,6 @@ const saveCoverLetterDoc = async (data: TCoverLetterDetail) =>
 
 const deleteCoverLetter = async (docId: string) =>
   await deleteDoc(doc(db, "documents", docId));
-
-const getCoverLetter = async (docId: string) => {
-  const document = await getDoc(doc(db, "documents", docId));
-  return {
-    jobListingText: document?.data?.()?.jobListingText,
-    text: document?.data?.()?.text,
-    userUid: document?.data?.()?.userUid,
-    id: document.id,
-    createdAt: formatReadableDate(document?.data?.()?.createdAt?.toDate()),
-    updatedAt: formatReadableDate(document?.data?.()?.updatedAt?.toDate()),
-  } as TGetCoverLetterQueryResponse;
-};
 
 const getCoverLetterQuery = (id?: string) =>
   doc(db, "documents", id).withConverter(coverLetterConverter);
@@ -47,8 +30,7 @@ const getCoverLettersQuery = (uid?: string) =>
 
 export {
   deleteCoverLetter,
-  getCoverLetter,
+  getCoverLetterQuery,
   getCoverLettersQuery,
   saveCoverLetterDoc,
-  getCoverLetterQuery,
 };

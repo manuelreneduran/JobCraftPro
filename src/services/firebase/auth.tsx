@@ -6,7 +6,14 @@ import {
   signInWithPopup,
   signOut,
 } from "firebase/auth";
-import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDocs,
+  query,
+  setDoc,
+  where,
+} from "firebase/firestore";
 import { auth, db, googleProvider } from ".";
 
 const serializeUser = (user: User) => {
@@ -14,6 +21,8 @@ const serializeUser = (user: User) => {
     uid: user.uid,
     authProvider: user.providerId,
     email: user.email,
+    generationsRemaining: 5,
+    tier: "free",
   };
 };
 
@@ -23,7 +32,7 @@ const signInWithGoogle = async () => {
   const q = query(collection(db, "users"), where("uid", "==", user.uid));
   const docs = await getDocs(q);
   if (docs.docs.length === 0) {
-    await addDoc(collection(db, "users"), serializeUser(user));
+    await setDoc(doc(collection(db, "users"), user.uid), serializeUser(user));
   }
 };
 
@@ -37,7 +46,7 @@ const registerWithEmailAndPassword = async (
 ) => {
   const res = await createUserWithEmailAndPassword(auth, email, password);
   const user = res.user;
-  await addDoc(collection(db, "users"), serializeUser(user));
+  await setDoc(doc(collection(db, "users"), user.uid), serializeUser(user));
 };
 
 const sendPasswordReset = async (email: string) => {

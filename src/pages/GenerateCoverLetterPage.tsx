@@ -17,6 +17,8 @@ import { auth } from "../services/firebase";
 import { saveCoverLetterDoc } from "../services/firebase/documents";
 import { TCoverLetterFormInputs } from "../utils/types";
 import { coverLetterFormSchema } from "../utils/validation";
+import { useDocumentData } from "react-firebase-hooks/firestore";
+import { getUserProfileQuery } from "../services/firebase/user";
 
 const defaultFormValues: TCoverLetterFormInputs = {
   resume: {
@@ -44,6 +46,8 @@ const GenerateCoverLetterPage = () => {
   ] = useGenerateCoverLetterMutation();
 
   const [user] = useAuthState(auth);
+  const [userProfile, isLoadingUserProfile, isErrorUserProfile] =
+    useDocumentData(user?.uid ? getUserProfileQuery(user.uid) : null);
 
   const { setErrorAlert } = useAlert();
 
@@ -282,34 +286,31 @@ const GenerateCoverLetterPage = () => {
   }, [activeStep, decrementStep, enableNext, incrementStep, reset]);
 
   return (
-    <CoreLayout pageHeader="Cover Letter Generator">
+    <CoreLayout
+      isLoading={isLoadingGenerateCoverLetter || isLoading || !userProfile}
+      isError={!!isErrorUserProfile}
+      pageHeader="Cover Letter Generator"
+    >
       <Stack
         justifyContent={{ xs: "inherit", sm: "center" }}
         alignItems={{ xs: "inherit", sm: "center" }}
         height="100%"
       >
-        <Paper
-          elevation={1}
-          sx={{
-            display: "flex",
-            width: { xs: "100%", md: "75%" },
-            height: { xs: "90%", sm: "75%" },
-          }}
-        >
-          {isLoadingGenerateCoverLetter || isLoading ? (
-            <Stack flex={1} justifyContent="center" alignItems="center">
-              <Loader text="Loading..." />
-            </Stack>
-          ) : (
-            <FlowCard
-              headerTitle="Generate Cover Letter"
-              steps={steps}
-              activeStep={activeStep}
-              body={renderBody()}
-              footer={renderFooter()}
-            />
-          )}
-        </Paper>
+        {userProfile?.tier === "free" &&
+        userProfile.generationsRemaining === 0 ? (
+          <Typography variant="body1">
+            You have reached your limit of 5 cover letter generations. Please
+            upgrade to premium to continue.
+          </Typography>
+        ) : (
+          <FlowCard
+            headerTitle="Generate Cover Letter"
+            steps={steps}
+            activeStep={activeStep}
+            body={renderBody()}
+            footer={renderFooter()}
+          />
+        )}
       </Stack>
     </CoreLayout>
   );
