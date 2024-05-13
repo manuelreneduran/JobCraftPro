@@ -1,29 +1,35 @@
 import { Button, Stack } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Typography from "../components/Typography";
 import useAlert from "../hooks/useAlert";
 import CoreLayout from "../layouts/CoreLayout";
-import { getDocument } from "../services/firebase/documents";
+import { getCoverLetter } from "../services/firebase/documents";
 import { colors } from "../styles/colors";
-import { TCoverLetterDetail } from "../utils/types";
+import { TGetCoverLetterQueryResponse } from "../utils/types";
 import useAppBarHeight from "../hooks/useAppBarHeight";
 
 const CoverLetterDetailPage = () => {
-  const [document, setDocument] = useState<TCoverLetterDetail | null>(null);
+  const [document, setDocument] = useState<TGetCoverLetterQueryResponse | null>(
+    null
+  );
   const params = useParams();
 
   const height = useAppBarHeight();
 
-  const { setAlert } = useAlert();
-  const fetchDocument = async (docId: string) => {
-    try {
-      const response = await getDocument(docId);
-      setDocument(response);
-    } catch (e: any) {
-      setAlert(e.message, "error");
-    }
-  };
+  const { setErrorAlert, setAlert } = useAlert();
+
+  const fetchDocument = useCallback(
+    async (docId: string) => {
+      try {
+        const response = await getCoverLetter(docId);
+        setDocument(response);
+      } catch (e: unknown) {
+        setErrorAlert(e);
+      }
+    },
+    [setErrorAlert, setDocument]
+  );
 
   useEffect(() => {
     if (params.id && !document) {

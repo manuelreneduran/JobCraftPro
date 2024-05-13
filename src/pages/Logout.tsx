@@ -15,7 +15,7 @@ const Logout = () => {
       logout();
     }
     navigate("/login");
-  }, []);
+  }, [navigate, user]);
 
   return (
     <Stack height="100vh">

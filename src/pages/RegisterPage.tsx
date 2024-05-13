@@ -1,18 +1,17 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Button, Paper, Stack, TextField } from "@mui/material";
-import { useEffect, useState } from "react";
+import { Button, Paper, TextField } from "@mui/material";
+import { useEffect } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
+import logo from "../assets/logo.svg";
 import Typography from "../components/Typography";
-import CoreLayout from "../layouts/CoreLayout";
+import useAlert from "../hooks/useAlert";
+import PublicLayout from "../layouts/PublicLayout";
 import { auth } from "../services/firebase";
+import { registerWithEmailAndPassword } from "../services/firebase/auth";
 import { TRegistrationFormInputs } from "../utils/types";
 import { registerFormSchema } from "../utils/validation";
-import { useAuthState } from "react-firebase-hooks/auth";
-import logo from "../assets/logo.svg";
-import useAlert from "../hooks/useAlert";
-import { registerWithEmailAndPassword } from "../services/firebase/auth";
-import PublicLayout from "../layouts/PublicLayout";
 
 const defaultRegisterFormValues = {
   email: "",
@@ -39,7 +38,7 @@ const RegisterPage = () => {
     resolver: yupResolver(registerFormSchema),
   });
 
-  const { setAlert } = useAlert();
+  const { setErrorAlert } = useAlert();
 
   const onSubmit: SubmitHandler<TRegistrationFormInputs> = async ({
     email,
@@ -47,8 +46,8 @@ const RegisterPage = () => {
   }) => {
     try {
       await registerWithEmailAndPassword(email, password);
-    } catch (e: any) {
-      setAlert(e.message, "error");
+    } catch (e: unknown) {
+      setErrorAlert(e);
     }
   };
 

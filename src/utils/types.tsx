@@ -36,6 +36,17 @@ export type TQueryResponse<T> = {
   result: T;
 };
 
+export type TGetCoverLetterQueryResponse = {
+  text: string;
+  jobListingText: string;
+  length: string;
+  paragraphs: string;
+  userUid: string;
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
 /* API Request Types */
 export type TGenerateCoverLetterRequest = {
   resumeText?: string;
@@ -91,7 +102,7 @@ export type TCoverLetterDetail = {
   length?: string;
   paragraphs?: string;
   userUid: string;
-  id: string;
-  createdAt: string;
-  updatedAt: string;
+  id?: string;
+  createdAt: Date;
+  updatedAt: Date;
 };

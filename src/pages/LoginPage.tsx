@@ -41,7 +41,7 @@ const Login = () => {
     resolver: yupResolver(loginFormSchema),
   });
 
-  const { setAlert } = useAlert();
+  const { setErrorAlert } = useAlert();
 
   const onSubmit: SubmitHandler<TLoginFormInputs> = async ({
     email,
@@ -49,16 +49,16 @@ const Login = () => {
   }) => {
     try {
       await logInWithEmailAndPassword(email, password);
-    } catch (e: any) {
-      setAlert(e.message, "error");
+    } catch (e: unknown) {
+      setErrorAlert(e);
     }
   };
 
   const handleSignInWithGoogle = async () => {
     try {
       await signInWithGoogle();
-    } catch (e: any) {
-      setAlert(e.message, "error");
+    } catch (e: unknown) {
+      setErrorAlert(e);
     }
   };
 

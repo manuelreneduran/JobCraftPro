@@ -1,5 +1,5 @@
 import { Stack } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import CoverLetterCard from "../components/CoverLetterCard";
 import Typography from "../components/Typography";
@@ -7,33 +7,36 @@ import useAlert from "../hooks/useAlert";
 import CoreLayout from "../layouts/CoreLayout";
 import { auth } from "../services/firebase";
 import {
-  deleteDocument,
+  deleteCoverLetter,
   getCoverLettersByUser,
 } from "../services/firebase/documents";
-import { TCoverLetterDetail } from "../utils/types";
+import { TGetCoverLetterQueryResponse } from "../utils/types";
 import Loader from "../components/Loader";
 
 const CoverLetterPage = () => {
-  const [coverLetters, setCoverLetters] = useState<TCoverLetterDetail[] | null>(
-    null
-  );
+  const [coverLetters, setCoverLetters] = useState<
+    TGetCoverLetterQueryResponse[] | null
+  >(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const [user] = useAuthState(auth);
-  const { setAlert } = useAlert();
+  const { setAlert, setErrorAlert } = useAlert();
 
-  const fetchCoverLetters = async (userUid: string) => {
-    let response: TCoverLetterDetail[] = [];
-    try {
-      setIsLoading(true);
-      response = await getCoverLettersByUser(userUid);
-    } catch (e: any) {
-      setAlert(e.message, "error", true);
-    } finally {
-      setCoverLetters(response);
-      setIsLoading(false);
-    }
-  };
+  const fetchCoverLetters = useCallback(
+    async (userUid: string) => {
+      let response: TGetCoverLetterQueryResponse[] = [];
+      try {
+        setIsLoading(true);
+        response = await getCoverLettersByUser(userUid);
+      } catch (e: unknown) {
+        setErrorAlert(e);
+      } finally {
+        setCoverLetters(response);
+        setIsLoading(false);
+      }
+    },
+    [setCoverLetters, setIsLoading, setErrorAlert]
+  );
 
   useEffect(() => {
     if (user && !coverLetters) {
@@ -44,13 +47,13 @@ const CoverLetterPage = () => {
   const handleMenuItemClick = async (option: string, id: string) => {
     if (option === "Delete") {
       try {
-        await deleteDocument(id);
+        await deleteCoverLetter(id);
         setAlert("Document deleted successfully", "success", true);
         if (user) {
           fetchCoverLetters(user.uid);
         }
-      } catch (e: any) {
-        setAlert(e.message, "error");
+      } catch (e: unknown) {
+        setErrorAlert(e);
       }
     }
   };

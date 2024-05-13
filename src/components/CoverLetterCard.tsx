@@ -13,7 +13,7 @@ import {
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Typography from "../components/Typography";
-import { TCoverLetterDetail } from "../utils/types";
+import { TGetCoverLetterQueryResponse } from "../utils/types";
 
 const options = ["Delete"];
 
@@ -23,7 +23,7 @@ const CoverLetterCard = ({
   coverLetter,
   handleMenuItemClick,
 }: {
-  coverLetter: TCoverLetterDetail;
+  coverLetter: TGetCoverLetterQueryResponse;
   handleMenuItemClick: (option: string, id: string) => Promise<void>;
 }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);

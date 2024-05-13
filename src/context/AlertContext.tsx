@@ -10,6 +10,7 @@ const initialState = {
 const AlertContext = createContext({
   ...initialState,
   setAlert: (text: string, type: string, useRawMessage?: boolean) => {},
+  setErrorAlert: (e: unknown) => {},
 });
 
 export const AlertProvider = ({ children }: { children: React.ReactNode }) => {
@@ -29,6 +30,14 @@ export const AlertProvider = ({ children }: { children: React.ReactNode }) => {
     }, ALERT_TIME);
   };
 
+  const setErrorAlert = (e: unknown) => {
+    if (e instanceof Error) {
+      setAlert(e.message, "error", true);
+    } else {
+      setAlert("An error occurred", "error", true);
+    }
+  };
+
   return (
     <AlertContext.Provider
       value={{
@@ -36,6 +45,7 @@ export const AlertProvider = ({ children }: { children: React.ReactNode }) => {
         type,
         useRawMessage,
         setAlert,
+        setErrorAlert,
       }}
     >
       {children}

@@ -15,7 +15,7 @@ import useAppBarHeight from "../hooks/useAppBarHeight";
 import CoreLayout from "../layouts/CoreLayout";
 import { useGenerateCoverLetterMutation } from "../services/api";
 import { auth } from "../services/firebase";
-import { saveDocument } from "../services/firebase/documents";
+import { saveCoverLetterDoc } from "../services/firebase/documents";
 import { TCoverLetterFormInputs } from "../utils/types";
 import { coverLetterFormSchema } from "../utils/validation";
 
@@ -46,7 +46,7 @@ const GenerateCoverLetterPage = () => {
 
   const [user] = useAuthState(auth);
 
-  const { setAlert } = useAlert();
+  const { setErrorAlert } = useAlert();
 
   const height = useAppBarHeight();
 
@@ -70,7 +70,7 @@ const GenerateCoverLetterPage = () => {
   const jobListingText = watch("jobListing.jobListingText");
 
   const onSubmit: SubmitHandler<TCoverLetterFormInputs> = async (data) => {
-    let form = {
+    const form = {
       resumeText: data.resume?.resumeText,
       resumePDF: data.resume?.resumePDF,
       jobListingText: data.jobListing?.jobListingText,
@@ -87,17 +87,20 @@ const GenerateCoverLetterPage = () => {
       // then navigate to the cover letter page
       if (user?.uid && coverLetterText) {
         setIsLoading(true);
-        const doc = await saveDocument(user?.uid, {
+        const doc = await saveCoverLetterDoc({
+          userUid: user?.uid,
           text: coverLetterText,
           jobListingText: form.jobListingText,
           length: form.length,
           paragraphs: form.paragraphs,
+          createdAt: new Date(),
+          updatedAt: new Date(),
         });
 
         navigate(`/cover-letter/${doc.id}`);
       }
-    } catch (e: any) {
-      setAlert(e.message, "error", true);
+    } catch (e: unknown) {
+      setErrorAlert(e);
     } finally {
       setIsLoading(false);
     }
@@ -162,9 +165,9 @@ const GenerateCoverLetterPage = () => {
               <UploadButton
                 variant="contained"
                 sx={{ color: "white" }}
-                onChange={(e: any) =>
-                  setValue("resume.resumePDF", e.target.files[0])
-                }
+                onChange={(file) => {
+                  setValue("resume.resumePDF", file?.target?.files?.[0]);
+                }}
                 success={!!resumePDF}
                 text={!resumePDF ? "Upload Resume" : "Resume Uploaded"}
               />

@@ -24,7 +24,7 @@ const ResetPasswordPage = () => {
 
   useEffect(() => {
     if (user) navigate("/dashboard");
-  }, [user, loading]);
+  }, [user, loading, navigate]);
 
   const {
     handleSubmit,
@@ -40,13 +40,11 @@ const ResetPasswordPage = () => {
   const onSubmit: SubmitHandler<TResetPasswordFormInputs> = async ({
     email,
   }) => {
-    try {
-      await sendPasswordReset(email);
-      setAlert(
-        "If email is valid a password reset email has been sent",
-        "success"
-      );
-    } catch {}
+    await sendPasswordReset(email);
+    setAlert(
+      "If email is valid a password reset email has been sent",
+      "success"
+    );
   };
 
   return (
