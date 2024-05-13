@@ -11,7 +11,6 @@ import Loader from "../components/Loader";
 import Typography from "../components/Typography";
 import UploadButton from "../components/UploadButton";
 import useAlert from "../hooks/useAlert";
-import useAppBarHeight from "../hooks/useAppBarHeight";
 import CoreLayout from "../layouts/CoreLayout";
 import { useGenerateCoverLetterMutation } from "../services/api";
 import { auth } from "../services/firebase";
@@ -47,8 +46,6 @@ const GenerateCoverLetterPage = () => {
   const [user] = useAuthState(auth);
 
   const { setErrorAlert } = useAlert();
-
-  const height = useAppBarHeight();
 
   const navigate = useNavigate();
 
@@ -287,9 +284,9 @@ const GenerateCoverLetterPage = () => {
   return (
     <CoreLayout pageHeader="Cover Letter Generator">
       <Stack
-        height={`calc(100vh - ${height}px - 24px)`}
         justifyContent={{ xs: "inherit", sm: "center" }}
         alignItems={{ xs: "inherit", sm: "center" }}
+        height="100%"
       >
         <Paper
           elevation={1}

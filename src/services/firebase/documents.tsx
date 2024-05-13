@@ -1,23 +1,21 @@
 // Import the functions you need from the SDKs you need
 import {
-  Query,
   addDoc,
   collection,
   deleteDoc,
   doc,
   getDoc,
-  getDocs,
-  limit,
   orderBy,
   query,
   where,
 } from "firebase/firestore";
+import { db } from ".";
 import { formatReadableDate } from "../../utils/date";
 import {
   TCoverLetterDetail,
   TGetCoverLetterQueryResponse,
 } from "../../utils/types";
-import { db } from ".";
+import { coverLetterConverter } from "./converters";
 
 const saveCoverLetterDoc = async (data: TCoverLetterDetail) =>
   await addDoc(collection(db, "documents"), data);
@@ -37,41 +35,20 @@ const getCoverLetter = async (docId: string) => {
   } as TGetCoverLetterQueryResponse;
 };
 
-const getManyCoverLetters = async (q: Query) => {
-  const docs = await getDocs(q);
-  if (docs.empty) return [];
-  return docs.docs.map((doc) => ({
-    jobListingText: doc?.data?.()?.jobListingText,
-    text: doc?.data?.()?.text,
-    userUid: doc?.data?.()?.userUid,
-    id: doc.id,
-    createdAt: formatReadableDate(doc.data().createdAt?.toDate()),
-    updatedAt: formatReadableDate(doc.data().updatedAt?.toDate()),
-  })) as TGetCoverLetterQueryResponse[];
-};
-const getSnapshotCoverLettersByUser = async (userUid: string) => {
-  const q = query(
-    collection(db, "documents"),
-    where("userUid", "==", userUid),
-    orderBy("createdAt", "desc"),
-    limit(6)
-  );
-  return await getManyCoverLetters(q);
-};
+const getCoverLetterQuery = (id?: string) =>
+  doc(db, "documents", id).withConverter(coverLetterConverter);
 
-const getCoverLettersByUser = async (userUid: string) => {
-  const q = query(
+const getCoverLettersQuery = (uid?: string) =>
+  query(
     collection(db, "documents"),
-    where("userUid", "==", userUid),
+    where("userUid", "==", uid || ""),
     orderBy("createdAt", "desc")
-  );
-  return await getManyCoverLetters(q);
-};
+  ).withConverter(coverLetterConverter);
 
 export {
-  saveCoverLetterDoc,
   deleteCoverLetter,
   getCoverLetter,
-  getSnapshotCoverLettersByUser,
-  getCoverLettersByUser,
+  getCoverLettersQuery,
+  saveCoverLetterDoc,
+  getCoverLetterQuery,
 };

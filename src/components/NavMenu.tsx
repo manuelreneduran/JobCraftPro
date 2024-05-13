@@ -22,7 +22,10 @@ import logo from "../assets/logo.svg";
 import { colors } from "../styles/colors";
 import { EMenuItemSettings, EPages, EPaths } from "../utils/types";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
-import { Collapse } from "@mui/material";
+import { Collapse, Stack } from "@mui/material";
+import Loader from "./Loader";
+import ErrorPage from "../pages/ErrorPage";
+import useAppBarHeight from "../hooks/useAppBarHeight";
 const drawerWidth = 200;
 
 const documents: { name: EPages; route: EPaths; icon: React.ReactNode }[] = [
@@ -64,14 +67,22 @@ const settings: {
 type NavMenuProps = {
   children: React.ReactNode;
   pageHeader?: string;
+  isLoading?: boolean;
+  isError?: boolean;
 };
-export default function NavMenu({ children, pageHeader }: NavMenuProps) {
+export default function NavMenu({
+  children,
+  pageHeader,
+  isLoading = false,
+  isError = false,
+}: NavMenuProps) {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isClosing, setIsClosing] = React.useState(false);
   const [openNestedDocuments, setOpenNestedDocuments] = React.useState(true);
   const [openNestedGenerate, setOpenNestedGenerate] = React.useState(true);
 
   const navigate = useNavigate();
+  const height = useAppBarHeight();
 
   const handleDrawerClose = () => {
     setIsClosing(true);
@@ -177,7 +188,7 @@ export default function NavMenu({ children, pageHeader }: NavMenuProps) {
       </List>
       <Divider />
       <List>
-        {settings.map(({ name, route, icon }) => (
+        {settings.map(({ name, route }) => (
           <ListItem
             key={name}
             disablePadding
@@ -264,11 +275,19 @@ export default function NavMenu({ children, pageHeader }: NavMenuProps) {
           flexGrow: 1,
           p: 3,
           width: { sm: `calc(100% - ${drawerWidth}px)` },
-          height: "100%",
+          height: `calc(100vh - ${height}px - 48px)`,
         }}
       >
         <Toolbar />
-        {children}
+        {isLoading ? (
+          <Stack justifyContent="center" alignItems="center">
+            <Loader />
+          </Stack>
+        ) : isError ? (
+          <ErrorPage />
+        ) : (
+          children
+        )}
       </Box>
     </Box>
   );

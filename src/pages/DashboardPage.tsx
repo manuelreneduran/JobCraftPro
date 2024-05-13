@@ -1,6 +1,6 @@
 import { Stack } from "@mui/material";
-import { useCallback, useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
+import { useCollectionData } from "react-firebase-hooks/firestore";
 import { Link } from "react-router-dom";
 import CoverLetterCard from "../components/CoverLetterCard";
 import Loader from "../components/Loader";
@@ -10,50 +10,26 @@ import CoreLayout from "../layouts/CoreLayout";
 import { auth } from "../services/firebase";
 import {
   deleteCoverLetter,
-  getSnapshotCoverLettersByUser,
+  getCoverLettersQuery,
 } from "../services/firebase/documents";
-import { TGetCoverLetterQueryResponse } from "../utils/types";
 
 const DashboardPage = () => {
-  const [coverLetters, setCoverLetters] = useState<
-    TGetCoverLetterQueryResponse[] | null
-  >(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-
   const [user] = useAuthState(auth);
 
-  const { setAlert, setErrorAlert } = useAlert();
-
-  const fetchCoverLetters = useCallback(
-    async (userUid: string) => {
-      let response: TGetCoverLetterQueryResponse[] = [];
-      try {
-        setIsLoading(true);
-        response = await getSnapshotCoverLettersByUser(userUid);
-      } catch (e: unknown) {
-        setErrorAlert(e);
-      } finally {
-        setCoverLetters(response);
-        setIsLoading(false);
-      }
-    },
-    [setErrorAlert, setCoverLetters, setIsLoading]
+  const [coverLetters, isLoading] = useCollectionData(
+    getCoverLettersQuery(user?.uid),
+    {
+      snapshotListenOptions: { includeMetadataChanges: true },
+    }
   );
 
-  useEffect(() => {
-    if (user && !coverLetters) {
-      fetchCoverLetters(user.uid);
-    }
-  }, [fetchCoverLetters, user, coverLetters]);
+  const { setAlert, setErrorAlert } = useAlert();
 
   const handleMenuItemClick = async (option: string, id: string) => {
     if (option === "Delete") {
       try {
         await deleteCoverLetter(id);
         setAlert("Document deleted successfully", "success", true);
-        if (user) {
-          fetchCoverLetters(user.uid);
-        }
       } catch (e: unknown) {
         setErrorAlert(e);
       }

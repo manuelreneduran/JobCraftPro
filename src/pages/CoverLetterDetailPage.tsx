@@ -1,41 +1,23 @@
 import { Button, Stack } from "@mui/material";
-import { useCallback, useEffect, useState } from "react";
+import { useDocumentData } from "react-firebase-hooks/firestore";
 import { useParams } from "react-router-dom";
 import Typography from "../components/Typography";
 import useAlert from "../hooks/useAlert";
 import CoreLayout from "../layouts/CoreLayout";
-import { getCoverLetter } from "../services/firebase/documents";
+import { getCoverLetterQuery } from "../services/firebase/documents";
 import { colors } from "../styles/colors";
-import { TGetCoverLetterQueryResponse } from "../utils/types";
-import useAppBarHeight from "../hooks/useAppBarHeight";
 
 const CoverLetterDetailPage = () => {
-  const [document, setDocument] = useState<TGetCoverLetterQueryResponse | null>(
-    null
-  );
   const params = useParams();
 
-  const height = useAppBarHeight();
-
-  const { setErrorAlert, setAlert } = useAlert();
-
-  const fetchDocument = useCallback(
-    async (docId: string) => {
-      try {
-        const response = await getCoverLetter(docId);
-        setDocument(response);
-      } catch (e: unknown) {
-        setErrorAlert(e);
-      }
-    },
-    [setErrorAlert, setDocument]
+  const [document, loading, error] = useDocumentData(
+    getCoverLetterQuery(params?.id),
+    {
+      snapshotListenOptions: { includeMetadataChanges: true },
+    }
   );
 
-  useEffect(() => {
-    if (params.id && !document) {
-      fetchDocument(params.id);
-    }
-  }, [params, fetchDocument, document]);
+  const { setAlert } = useAlert();
 
   const handleCopy = () => {
     if (document?.text) {
@@ -47,10 +29,9 @@ const CoverLetterDetailPage = () => {
   };
 
   return (
-    <CoreLayout pageHeader="Cover Letter">
+    <CoreLayout pageHeader="Cover Letter" isLoading={loading} isError={!!error}>
       <Stack
         p={4}
-        height={`calc(100vh - ${height}px - 48px)`}
         sx={{ overflowY: "auto", backgroundColor: colors.background.secondary }}
       >
         <Stack
