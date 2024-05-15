@@ -1,8 +1,9 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Button, Paper, Slider } from "@mui/material";
+import { Button, Slider } from "@mui/material";
 import Stack from "@mui/material/Stack";
 import { useCallback, useMemo, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
+import { useDocumentData } from "react-firebase-hooks/firestore";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import FlowCard from "../components/FlowCard";
@@ -15,10 +16,12 @@ import CoreLayout from "../layouts/CoreLayout";
 import { useGenerateCoverLetterMutation } from "../services/api";
 import { auth } from "../services/firebase";
 import { saveCoverLetterDoc } from "../services/firebase/documents";
+import {
+  decrementGenerationsRemaining,
+  getUserProfileQuery,
+} from "../services/firebase/user";
 import { TCoverLetterFormInputs } from "../utils/types";
 import { coverLetterFormSchema } from "../utils/validation";
-import { useDocumentData } from "react-firebase-hooks/firestore";
-import { getUserProfileQuery } from "../services/firebase/user";
 
 const defaultFormValues: TCoverLetterFormInputs = {
   resume: {
@@ -98,6 +101,15 @@ const GenerateCoverLetterPage = () => {
           updatedAt: new Date(),
         });
 
+        if (
+          userProfile?.tier === "free" &&
+          userProfile.generationsRemaining > 0
+        ) {
+          await decrementGenerationsRemaining(
+            user.uid,
+            userProfile.generationsRemaining - 1
+          );
+        }
         navigate(`/cover-letter/${doc.id}`);
       }
     } catch (e: unknown) {
@@ -153,6 +165,10 @@ const GenerateCoverLetterPage = () => {
     resetForm();
   };
 
+  const uploadResume = async (file: File) => {
+    setValue("resume.resumePDF", file);
+  };
+
   const renderBody = useCallback(() => {
     switch (activeStep) {
       case 0:
@@ -166,9 +182,7 @@ const GenerateCoverLetterPage = () => {
               <UploadButton
                 variant="contained"
                 sx={{ color: "white" }}
-                onChange={(file) => {
-                  setValue("resume.resumePDF", file?.target?.files?.[0]);
-                }}
+                onChange={(file) => uploadResume(file?.target?.files?.[0])}
                 success={!!resumePDF}
                 text={!resumePDF ? "Upload Resume" : "Resume Uploaded"}
               />
@@ -287,7 +301,12 @@ const GenerateCoverLetterPage = () => {
 
   return (
     <CoreLayout
-      isLoading={isLoadingGenerateCoverLetter || isLoading || !userProfile}
+      isLoading={
+        isLoadingGenerateCoverLetter ||
+        isLoading ||
+        isLoadingUserProfile ||
+        !userProfile
+      }
       isError={!!isErrorUserProfile}
       pageHeader="Cover Letter Generator"
     >
