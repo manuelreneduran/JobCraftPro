@@ -11,7 +11,7 @@ const CoverLetterDetailPage = () => {
   const params = useParams();
 
   const [document, loading, error] = useDocumentData(
-    getCoverLetterQuery(params?.id),
+    getCoverLetterQuery(params.id || ""),
     {
       snapshotListenOptions: { includeMetadataChanges: true },
     }

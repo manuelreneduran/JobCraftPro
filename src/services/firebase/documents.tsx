@@ -18,7 +18,7 @@ const saveCoverLetterDoc = async (data: TCoverLetterDetail) =>
 const deleteCoverLetter = async (docId: string) =>
   await deleteDoc(doc(db, "documents", docId));
 
-const getCoverLetterQuery = (id?: string) =>
+const getCoverLetterQuery = (id: string) =>
   doc(db, "documents", id).withConverter(coverLetterConverter);
 
 const getCoverLettersQuery = (uid?: string) =>

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { createContext, useState } from "react";
 
 const ALERT_TIME = 5000;
@@ -9,8 +10,12 @@ const initialState = {
 
 const AlertContext = createContext({
   ...initialState,
-  setAlert: (text: string, type: string, useRawMessage?: boolean) => {},
-  setErrorAlert: (e: unknown) => {},
+  setAlert: (text: string, type: string, useRawMessage?: boolean) => {
+    () => ({ text, type, useRawMessage });
+  },
+  setErrorAlert: (e: unknown) => {
+    () => ({ e });
+  },
 });
 
 export const AlertProvider = ({ children }: { children: React.ReactNode }) => {
