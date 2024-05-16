@@ -178,7 +178,7 @@ const GenerateCoverLetterPage = () => {
               Leverage the power of AI to build a custom cover letter for your
               next job application. Upload your resume to get started.
             </Typography>
-            <Stack flex={1} justifyContent="center" alignItems="center">
+            <Stack flex={1} justifyContent="center" alignItems="center" my={3}>
               <UploadButton
                 variant="contained"
                 sx={{ color: "white" }}

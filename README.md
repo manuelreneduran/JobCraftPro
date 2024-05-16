@@ -1,30 +1,49 @@
-# React + TypeScript + Vite
+# Cover Maker
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Cover Maker is a project that allows users to create custom covers for various purposes. It provides a user-friendly interface and a wide range of design options to create visually appealing covers.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Easy-to-use interface
+- Generate cover letters
+- Revisit generated content
 
-## Expanding the ESLint configuration
+## Installation
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+1. Clone the repository:
 
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+```bash
+git clone https://github.com/your-username/covermaker.git
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+2. Navigate to the project directory:
+
+```bash
+cd covermaker
+```
+
+3. Install the dependencies:
+
+```bash
+npm install
+```
+
+## Usage
+
+1. Start the application:
+
+```bash
+npm start
+```
+
+2. Open your web browser and navigate to `http://localhost:3000`.
+
+3. Follow the on-screen instructions to create your custom cover.
+
+## Contributing
+
+Contributions are welcome! If you have any ideas, suggestions, or bug reports, please open an issue or submit a pull request.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more information.
