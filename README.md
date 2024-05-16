@@ -1,6 +1,6 @@
-# Cover Maker
+# JobCraftPro
 
-Cover Maker is a project that allows users to create custom covers for various purposes. It provides a user-friendly interface and a wide range of design options to create visually appealing covers.
+JobCraftPro is a project that allows users to create custom cover letters for various purposes. It provides a user-friendly interface and a wide range of design options to create visually appealing covers.
 
 ## Features
 
@@ -13,13 +13,13 @@ Cover Maker is a project that allows users to create custom covers for various p
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/your-username/covermaker.git
+git clone https://github.com/your-username/jobcraftpro.git
 ```
 
 2. Navigate to the project directory:
 
 ```bash
-cd covermaker
+cd jobcraftpro
 ```
 
 3. Install the dependencies:
