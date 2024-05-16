@@ -5,16 +5,20 @@ import type {
   TQueryResponse,
 } from "../utils/types";
 
+const BASE_API_URL = import.meta.env.PROD
+  ? import.meta.env.VITE_BASE_API_URL
+  : "http://localhost:3000/api/";
+
 export const api = createApi({
   reducerPath: "api",
-  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:3000/api/" }),
+  baseQuery: fetchBaseQuery({ baseUrl: BASE_API_URL }),
   endpoints: (builder) => ({
     generateCoverLetter: builder.mutation<
       TQueryResponse<string>,
       TGenerateCoverLetterRequest
     >({
       query: (body) => {
-        let formData = new FormData();
+        const formData = new FormData();
         formData.append("jobListingText", body.jobListingText);
 
         if (body.resumePDF) {
